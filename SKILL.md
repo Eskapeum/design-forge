@@ -1,1022 +1,653 @@
 ---
 name: design-forge
-description: "The definitive design skill for building Awwwards-winning websites. Combines a 5-stage research-driven forge workflow (Research → Explore → Iterate → Generate → Integrate) with comprehensive design standards, quality gates, and craft principles. Triggers on: design this, create mockup, visual design, design the UI, website design, landing page, hero section, page design, site build, design forge, or when a SITE.md roadmap exists with unchecked pages. This is the north star for every pixel that ships."
+description: "Awwwards-level web design system with discovery, design system presets, contract enforcement, and a 7-stage pipeline with human feedback gates. Triggers on: design this, create mockup, visual design, design the UI, website design, landing page, hero section, page design, site build, design forge, or when SITE.md has unchecked pages."
 ---
 
-# Design Forge — Awwwards-Level Web Design System
+# Design Forge — Awwwards-Level Design System
 
-> "Design is not just what it looks like and feels like. Design is how it works." — Steve Jobs
-
-## How This Skill Works
-
-This is a **unified design system** that combines:
-1. A **5-stage pipeline** with human feedback gates at every stage
-2. **Comprehensive design standards** that govern every visual decision
-3. **6 deep-reference files** for specific design domains
-4. **Quality enforcement** — nothing ships without meeting the bar
-
----
+A **7-stage pipeline** with human feedback gates, design contract enforcement, and Stitch MCP integration. Every design decision is grounded in discovery, aligned with research, and enforced through a living contract.
 
 ## When to Use
-
 - Designing any new screen, page, or major UI component
-- `SITE.md` has unchecked pages in the roadmap
-- User asks for visual design before implementation
 - Building an Awwwards-quality or portfolio-grade site
-- User asks for "website design", "landing page", "hero section", "page design", or "site build"
-- Any moment where the visual quality of a deliverable matters
+- `SITE.md` has unchecked pages in the roadmap
 
 ## When NOT to Use
-
-- Quick component tweaks (use SuperDesign directly)
-- Text-only content changes (use CMS)
-- Bug fixes to existing UI
-- Backend or API work with no visual component
-
-## Prerequisites
-
-- SuperDesign CLI installed (`superdesign --version`)
-- Stitch MCP server available
-- `.superdesign/init/` context files populated
-- `DESIGN.md` with:
-  - Section 6: Design System Notes for Stitch Generation
-  - Design personality brief (archetype, emotional target, visual metaphor)
-  - Token foundation (spacing, radius, transitions, z-index CSS variables)
-- `SITE.md` with sitemap roadmap
+- Quick component tweaks (use Stitch `edit_screens` directly)
+- Bug fixes, backend work, text-only changes
 
 ## Reference Files
 
-These 6 deep-reference files live in `references/` alongside this skill. Consult them for domain-specific decisions:
+Loaded on-demand per stage. Do NOT load all at once.
 
-| File | When to Use |
-|------|-------------|
-| `typography-system.md` | Choosing fonts, setting type scale, loading strategy |
-| `color-and-light.md` | Palette construction, gradients, shadows, dark mode |
-| `layout-and-spatial.md` | Grid architecture, spacing rhythm, compositional techniques |
-| `motion-and-interaction.md` | Easing functions, scroll animations, micro-interactions |
-| `component-patterns.md` | Navigation, heroes, cards, CTAs, forms, footers |
-| `performance-and-craft.md` | Performance budgets, image optimization, pre-launch audit |
-
----
-
-## Part 1: The Design Philosophy
-
-> "Good design is as little design as possible." — Dieter Rams
-
-### The Three Laws of Design
-
-**Law 1: Intentional Restraint**
-The best design decision is often what you remove, not what you add. Every element on the screen must earn its place. White space is not emptiness — it is architecture. It creates breathing room, directs focus, and communicates premium quality. Ask before adding anything: "Does this element serve the user, or does it serve my ego?"
-
-Signs of restraint failure: cluttered heroes, too many CTAs, decorative elements that add noise, text that says what the visual already shows.
-
-Signs of restraint mastery: Stripe's homepage — one gradient, one headline, one CTA. Linear's product page — maximum negative space, minimum words. Apple's product launches — one product, one light source, one sentence.
-
-**Law 2: Obsessive Coherence**
-Every design decision ripples through the entire site. If you choose a 4px border-radius for buttons, every card, input, and modal must use the same 4px system. If you choose a specific shade of indigo as your primary color, that shade must appear in every hover state, every active state, every gradient, every glow. Stripe's 4px radius is legendary because it appears on literally everything.
-
-Coherence is what separates a designed site from a built site. Anyone can arrange elements. Only disciplined designers make every pixel feel like it belongs to the same system.
-
-**Law 3: Sensory Reward**
-Great websites feel physical. Hover states should feel like pressing a real button. Scroll reveals should feel like curtains parting. Page transitions should feel like turning a page. The goal is to make the user feel something — curiosity, delight, confidence, momentum.
-
-Every interaction is an opportunity to reward the user for their attention. A site that offers no sensory feedback feels dead. A site that offers too much feels overwhelming. The craft is calibrating the right amount of reward for the right moments.
-
-### The "Would Steve Ship It?" Test
-
-Before finalizing any design, run it through these 5 questions. If any answer is no, keep refining.
-
-1. **Can I remove one more thing?** If yes, remove it. If no, you might be done.
-2. **Is every element aligned to the grid?** Random pixel placement is a sign of carelessness. Intentional grid breaks are signs of mastery.
-3. **Is there a single, undeniable visual hierarchy?** The user's eye should land on exactly ONE thing first. If it could land on two, choose one and make the other smaller, lighter, or more distant.
-4. **Does this feel like something?** Does it feel premium? Warm? Rebellious? Technical? It must feel like something specific — "fine" is not good enough.
-5. **Would this win Site of the Day on Awwwards?** If you're not sure, it wouldn't. Keep going.
+| File | Load At | Purpose |
+|------|---------|---------|
+| `references/discovery-framework.md` | Stage 0 | Discovery questions, preset mapping, contract template |
+| `references/design-system-architecture.md` | Stage 0.5 | Three-layer tokens, DTCG spec, DESIGN.md template |
+| `references/typography-system.md` | Stage 2+ | Font selection, type scale, loading strategy |
+| `references/color-and-light.md` | Stage 2+ | Palette construction, gradients, dark mode |
+| `references/layout-and-spatial.md` | Stage 2+ | Grid, spacing, compositional techniques |
+| `references/motion-and-interaction.md` | Stage 2+ | GSAP patterns, scroll animations, micro-interactions |
+| `references/component-patterns.md` | Stage 2+ | Nav, heroes, cards, CTAs, forms, footers |
+| `references/performance-and-craft.md` | Stage 4+ | Performance budgets, accessibility, pre-launch audit |
 
 ---
 
-## Part 2: Design Token Foundation
-
-Before any screen design begins, the design system must be defined. This is the foundation that makes coherence possible.
-
-### Step 1: Design Personality Brief
-
-Complete this brief for every project before touching any design tool:
+## The Pipeline
 
 ```
-ARCHETYPE: [Choose one: Bold Innovator / Warm Expert / Elegant Minimalist /
-            Rebellious Creator / Trusted Authority / Playful Disruptor]
+DISCOVER → GATE 0 → DESIGN SYSTEM → GATE 0.5 → RESEARCH → GATE 1 → EXPLORE → GATE 2 → ITERATE → GATE 3 → REFINE → GATE 4 → INTEGRATE → GATE 5 → DONE
+    ↑                                                ↑              ↑                ↑                ↑                ↑
+    └────────────────────────── feedback loops back to earlier stages as needed ──────┘────────────────┘────────────────┘
 
-EMOTIONAL TARGET: When users land on this site, they should feel ___________
-                  (choose 2-3: inspired / confident / curious / safe /
-                  excited / impressed / understood / capable)
-
-VISUAL METAPHOR: This site should feel like ___________
-                 (e.g., "a gallery opening", "a precision instrument",
-                 "a warm conversation", "a rocket launching")
-
-REFERENCE SITES: [3 sites that nail the vibe you're going for]
-ANTI-REFERENCES: [2 sites that represent what this site should NOT be]
-ONE WORD: If this site were a person, they would be described as: ___________
-```
-
-### Step 2: Design Token Foundation
-
-These CSS custom properties form the design system. Define them in `globals.css` or `tokens.css` before writing any component styles:
-
-```css
-:root {
-  /* ─── SPACING SCALE (8px base) ───────────────────────────── */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
-  --space-10: 40px;
-  --space-12: 48px;
-  --space-16: 64px;
-  --space-20: 80px;
-  --space-24: 96px;
-  --space-32: 128px;
-  --space-48: 192px;
-
-  /* ─── BORDER RADIUS ──────────────────────────────────────── */
-  --radius-xs: 2px;
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --radius-2xl: 24px;
-  --radius-full: 9999px;
-
-  /* ─── TRANSITIONS ────────────────────────────────────────── */
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-expo: cubic-bezier(0.7, 0, 0.84, 0);
-  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
-  --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --spring-gentle: cubic-bezier(0.22, 1.0, 0.36, 1.0);
-
-  --duration-fast: 150ms;
-  --duration-base: 250ms;
-  --duration-slow: 400ms;
-  --duration-slower: 700ms;
-  --duration-slowest: 1000ms;
-
-  /* ─── Z-INDEX SCALE ──────────────────────────────────────── */
-  --z-below: -1;
-  --z-base: 0;
-  --z-raised: 10;
-  --z-dropdown: 100;
-  --z-sticky: 200;
-  --z-overlay: 300;
-  --z-modal: 400;
-  --z-toast: 500;
-  --z-cursor: 9999;
-}
-```
-
-### Step 3: Design in Layers
-
-Every screen is composed of 5 layers. Design them in order:
-
-1. **Background layer** — The ambient environment (gradient, texture, color). This sets the mood before any content appears.
-2. **Content layer** — The actual information hierarchy (headlines, body, images). This is what the user came for.
-3. **Interactive layer** — Buttons, links, inputs. These must be visually distinct from content but not distracting.
-4. **Overlay layer** — Modals, drawers, tooltips. These sit above everything and demand focus.
-5. **Feedback layer** — Loading states, success states, error states, toasts. These are temporary but must be cohesive.
-
----
-
-## Part 3: Non-Negotiable Standards
-
-These are not guidelines — they are requirements. Every design that ships must meet every standard below.
-
-### Typography Standards
-
-- **Minimum 2 typefaces**: One display (characterful, memorable) and one body (readable, invisible). Never use a single typeface for everything.
-- **Mathematical type scale**: Use a ratio (1.250 is the default). Never set arbitrary font sizes. See `references/typography-system.md` for the full scale table.
-- **Line height**: Body text 1.5–1.7. Headings 1.0–1.2. Never set the same line height for both.
-- **Measure**: Body text `max-width: 65ch`. Never let body text run full-width across a 1440px container.
-- **Optical sizing**: Letter-spacing must tighten as size increases. `h1: -0.03em`, `body: 0.01em`. See the reference file for the full table.
-- **Font display**: Always `font-display: swap`. Never let layout shift caused by font loading.
-- **Never**: Use Inter as a display font. Use more than 3 typefaces. Let text justify on the web.
-
-### Color Standards
-
-- **Maximum 5 colors**: One primary (brand champion), 2–3 neutrals, and functional colors (success, error, warning). Anything beyond 5 is noise.
-- **60-30-10 rule**: 60% neutral backgrounds, 30% secondary color, 10% accent/brand.
-- **WCAG AAA target**: 7:1 contrast ratio for body text. 4.5:1 minimum for all UI text. Use a contrast checker before shipping.
-- **Dark mode is not optional**: Every site must support `[data-theme="dark"]` with a purposefully designed dark palette — not just inverted colors.
-- **Never**: Use pure `#000000` or `#FFFFFF` as primary surface colors. Use stock color palettes without customization.
-
-### Layout Standards
-
-- **12-column grid on desktop**: Every element sits on the grid or deliberately breaks it. Accidental off-grid placement is always wrong.
-- **4-column grid on mobile**: Gutter 16px, margin 16px.
-- **Section padding**: `clamp(48px, 8vw, 128px)` vertical padding per section. Hero sections get more: `clamp(64px, 12vw, 192px)`.
-- **Max-widths**: Marketing sites 1280px. Dashboards 1440px. Body text 65ch.
-- **Negative space**: If a section feels "empty", resist filling it. The space is working.
-- **Never**: Symmetric layouts on every section (monotonous). Horizontal scroll on mobile from content overflow. Elements touching the edge of the viewport.
-
-### Motion Standards
-
-- **Every interactive element has a hover and active state**: No bare, stateless elements.
-- **No hard cuts**: Page transitions must exist. Even a simple fade is better than nothing.
-- **IntersectionObserver for scroll reveals**: Content reveals as it enters the viewport. 70ms stagger between siblings.
-- **Duration hierarchy**: Micro (100–200ms), Component (200–400ms), Section (400–700ms), Page (600–1000ms). Match duration to scope.
-- **Never**: Use `linear` or `ease` easing. Animate layout properties (`width`, `height`, `margin`). Animate more than 3 properties simultaneously.
-
-### Image Standards
-
-- **WebP/AVIF formats**: Always. JPEG as fallback. Never PNG for photographs.
-- **Lazy loading**: All below-fold images use `loading="lazy"`. Hero/LCP images use `loading="eager"` with `priority`.
-- **Locked aspect ratios**: Images never reflow. Always set explicit `width` and `height`.
-- **Art direction**: Use `<picture>` with `<source media>` for different crops on different breakpoints.
-- **Video**: Autoplay only if `muted` and `prefers-reduced-motion: no-preference`.
-- **Never**: Generic stock photography in heroes. Images without `alt` text. Images that resize without aspect ratio lock.
-
-### Accessibility Standards
-
-- **Semantic HTML**: `<header>`, `<main>`, `<nav>`, `<section>`, `<article>`, `<footer>`. Never use `<div>` when a semantic element exists.
-- **Focus visible**: `:focus-visible` with a 2px brand-colored outline. Mouse users should not see focus rings; keyboard users must always see them.
-- **Keyboard navigation**: Every interactive element reachable and operable by keyboard alone.
-- **ARIA**: Only when semantic HTML cannot convey the meaning. Never ARIA for decoration.
-- **Reduced motion**: `@media (prefers-reduced-motion: reduce)` on all animations. Users who need it get instant transitions.
-- **Screen reader tested**: VoiceOver (Mac) and NVDA (Windows) before shipping.
-
----
-
-## Part 4: The Pipeline — 5 Stages with Human Feedback Gates
-
-```
-RESEARCH → GATE 1 → EXPLORE → GATE 2 → ITERATE → GATE 3 → GENERATE → GATE 4 → INTEGRATE → GATE 5 → DONE
-    ↑____________↑_______↑___________________↑___________________↑___________________↑
-                       (feedback loops at each gate back to earlier stages as needed)
+DESIGN CONTRACT flows forward through every stage. Every Stitch call includes the full contract.
 ```
 
 **Every gate is a human decision point. The pipeline NEVER auto-advances past a gate.**
 
-### Human Feedback Format
+---
 
-At every gate, present the work and ask for structured feedback using this format:
+## The Design Contract
 
-```
-GATE {N}: {Gate Name}
+The Design Contract is the enforcement mechanism. It is a living document stored at `.design-forge/contract.md` that:
 
-Here's what I produced: {show screenshot / describe output}
+1. **Captures** every user decision (discovery answers, preset choice, gate approvals, feedback)
+2. **Captures** every research finding (patterns to steal, layout approaches, techniques)
+3. **Accumulates** — each gate adds to it, nothing gets dropped
+4. **Gets injected** into every Stitch call as non-negotiable directives
+5. **Gets validated** — after every Stitch output, the result is checked against the contract
 
-Please review on these dimensions:
-1. LAYOUT    — Is the structure right? (spacing, hierarchy, flow)
-2. COLOUR    — Do the colours feel right? (contrast, mood, brand)
-3. TYPOGRAPHY — Are the fonts/sizes working? (readability, impact)
-4. VIBE      — Does it feel world-class? (energy, polish, "wow" factor)
-5. CONTENT   — Is the right content shown? (what's missing, what's extra)
-
-Your options:
-- APPROVE  → Move to next stage
-- REVISE   → I'll adjust based on your notes (stays in current stage)
-- PIVOT    → Go back to a previous stage (specify which)
-- ADD      → Keep this but add/change something specific
-```
-
-**Always use AskUserQuestion** to present the gate. Include the 5 dimensions as context so the user gives structured feedback, not just "looks good."
-
-### Feedback Log
-
-All feedback is logged to `.superdesign/feedback/{screen-name}.md` for continuity across sessions and as a reference for future screens.
-
-**Log format:**
+### Contract Structure
 
 ```markdown
-# Feedback Log: {Screen Name}
+# Design Contract: {Project Name}
+## Last Updated: {date}
 
-## Gate 1: Research Review
-- **Decision:** {Approved / Swapped Ref 2 for X}
-- **Notes:** "{User's exact feedback}"
-- **Action taken:** {What was changed}
+## Identity
+- **Brand Name:** {name}
+- **Archetype:** {from discovery}
+- **Emotional Target:** {2-3 feelings}
+- **Visual Metaphor:** {what the site should feel like}
+- **One Word:** {brand personality in one word}
 
-## Gate 2: First Impression
-- **Decision:** {Good direction / Wrong direction}
-- **Liked:** "{What the user liked}"
-- **Disliked:** "{What the user didn't like}"
-- **Action taken:** {Prompt adjustment or re-research}
+## Audience
+- **Primary User:** {who they are, what they need}
+- **User Mindset:** {what they feel when they arrive}
+- **Conversion Goal:** {what each page should accomplish}
 
-## Gate 3: Winner Selection
-- **Decision:** {Picked Variant B / Hybrid A+B}
-- **From A:** "{Elements to keep from A}"
-- **From B:** "{Elements to keep from B}"
-- **Original:** "{Elements to keep from original}"
-- **Action taken:** {Final iteration instructions}
+## Design System
+- **Stitch Preset:** {Bauhaus/Beam/Hand-draw/Kinetic/Luxury/Motion/Neumorphism/Newsprint/Playful/Uber/Win98}
+- **Customizations:** {overrides applied on top of preset}
+- **Primary Color:** {hex + emotional rationale}
+- **Neutral Base:** {warm or cool + hex range}
+- **Display Font:** {name + weights}
+- **Body Font:** {name + weights}
+- **Border Radius:** {system choice + rationale}
+- **Spacing Base:** {8px default or custom}
 
-## Gate 4: Fidelity Check
-- **Decision:** {Matches / Regenerate}
-- **Gaps:** "{What doesn't match the winning design}"
-- **Action taken:** {Stitch prompt adjustments}
+## Research Directives (added at Gate 1)
+- **From {Ref 1}:** {specific pattern to enforce}
+- **From {Ref 2}:** {specific pattern to enforce}
+- **From {Ref 3}:** {specific pattern to enforce}
+- **From {Ref 4}:** {specific pattern to enforce}
+- **Synthesis:** {combined approach}
 
-## Gate 5: Final Sign-Off
-- **Decision:** {Ship / Minor fixes / Major revision}
-- **Notes:** "{Final feedback}"
-- **Action taken:** {Integration completed / revisions made}
+## Accumulated Feedback (grows at every gate)
+- **Gate 0:** {discovery refinements}
+- **Gate 0.5:** {design system adjustments}
+- **Gate 1:** {research direction notes}
+- **Gate 2:** {first impression adjustments}
+- **Gate 3:** {winner selection, hybrid instructions}
+- **Gate 4:** {polish refinements}
+
+## Hard Constraints (never violate)
+- {List of explicit user deal-breakers}
+- {List of explicit exclusions}
+
+## Soft Preferences (follow unless user overrides)
+- {List of user preferences detected from feedback patterns}
 ```
+
+### Contract Rules
+
+1. **Create** the contract at the end of Stage 0 (Discovery)
+2. **Enrich** the contract at Gate 0.5 (Design System) and Gate 1 (Research)
+3. **Inject** the full contract into every Stitch prompt from Stage 2 onward
+4. **Update** the contract after every gate with new feedback
+5. **Validate** every Stitch output against the contract before presenting to user
+6. **Never remove** a directive unless the user explicitly says to
 
 ---
 
-### Stage 1: RESEARCH — 4 Inspiration References
+## Stage 0: DISCOVERY
 
-**Goal:** Ground the design in real-world excellence. Never design from memory alone.
+**Goal:** Understand the project deeply before any visual work. Build Design Contract v1.
+
+**Load:** `references/discovery-framework.md`
 
 **Process:**
 
-1. Identify the screen type (e.g., "cinematic opener", "data dashboard", "calculator form")
-2. Web search for 4 reference sites that excel at this specific screen type
-3. For each reference, extract:
-   - **Layout pattern** — how content is structured
-   - **Colour usage** — light/dark, accent placement
-   - **Typography** — heading/body hierarchy, size scale
-   - **Interaction** — hover states, scroll behaviour, animations
-   - **What makes it award-winning** — the specific "wow" element
-4. Save research to `.superdesign/research/{screen-name}.md`
+1. Read any existing project context (DESIGN.md, SITE.md, brand assets, `.design-forge/init/`)
+2. Assess what's already known vs. what's missing
+3. Ask discovery questions organized by category (see reference file for full framework):
 
-**Research file format:**
+### Discovery Categories
 
-```markdown
-# Research: {Screen Name}
+**A. Business & Brand Identity**
+- What does the company/product do in one sentence?
+- Who is the primary audience? What do they care about?
+- What 3 adjectives describe the brand personality?
+- What's the single most important action a visitor should take?
+- Who are the top 3 competitors? What do they do well/poorly?
 
-## Reference 1: {Site Name} ({URL})
-- **Type:** {What kind of site/page}
-- **Layout:** {Description of structure}
-- **Steal this:** {Specific pattern to incorporate}
-- **Screenshot/description:** {Visual description}
+**B. Visual Direction**
+- Are there existing brand assets (logo, colors, fonts, guidelines)?
+- Show 2-3 sites whose visual style you admire. What specifically do you like about each?
+- Show 1-2 sites that represent what you do NOT want. Why?
+- Which Stitch preset feels closest to your vision?
+  - **Bauhaus** — geometric, grid-heavy, primary colors
+  - **Beam** — clean, modern, light
+  - **Hand-draw** — sketchy, organic, informal
+  - **Kinetic** — motion-forward, dynamic
+  - **Luxury** — dark, serif, high-contrast, premium
+  - **Motion** — animation-centric, fluid
+  - **Neumorphism** — soft shadows, extruded UI
+  - **Newsprint** — editorial, column-based, typographic
+  - **Playful** — rounded, colorful, friendly
+  - **Uber Design System** — systematic, neutral, functional
+  - **Win98** — retro, pixel borders, nostalgic
+- What's the emotional temperature? (warm/cool, bold/subtle, dense/spacious)
 
-## Reference 2: ...
-## Reference 3: ...
-## Reference 4: ...
+**C. Content & Structure**
+- What pages does the site need? (sitemap)
+- What content exists today? What needs to be written?
+- Are there product screenshots, illustrations, or photography available?
+- Any specific sections or features that are must-haves?
 
-## Synthesis
-Patterns to combine for our design:
-1. {Pattern from Ref 1} + {Pattern from Ref 3}
-2. {Specific layout approach}
-3. {Typography/colour decision}
-4. {Interaction/animation approach}
+**D. Technical Constraints**
+- Existing codebase or framework? (Next.js, Astro, etc.)
+- CMS requirements?
+- Performance constraints? (audience internet speed, device types)
+- Accessibility requirements beyond WCAG AA?
+
+**E. Deal-Breakers & Non-Negotiables**
+- What must absolutely NOT appear? (specific elements, styles, patterns)
+- Any brand guidelines that cannot be bent?
+- Budget or timeline constraints affecting scope?
+
+### Adaptive Questioning
+
+Do NOT ask all questions. Assess what's already known and only ask what's missing:
+- If DESIGN.md exists -> skip visual direction basics, ask refinement questions
+- If SITE.md exists -> skip content/structure, ask about specific pages
+- If brand assets exist -> skip brand identity, ask about extending the system
+- First project -> ask more (10-15 questions across categories)
+- Returning screen -> ask less (2-3 questions about this specific screen)
+
+### GATE 0: Discovery Review
+
+Present a summary of what you learned and the draft Design Contract. Use **AskUserQuestion**.
+
+```
+GATE 0: Discovery Review
+
+Based on our conversation, here's what I understand:
+
+BRAND: {summary}
+AUDIENCE: {who + mindset}
+VISUAL DIRECTION: {archetype + emotional target + references}
+PRESET RECOMMENDATION: {preset} because {rationale}
+CONTENT SCOPE: {pages/sections}
+DEAL-BREAKERS: {constraints}
+
+Does this capture your vision? Your options:
+- APPROVE  -> Lock this in, move to design system setup
+- CORRECT  -> Fix specific items (tell me what's wrong)
+- EXPAND   -> Add context I missed
 ```
 
-**Search strategies by screen type:**
+**After APPROVE:** Write Design Contract v1 to `.design-forge/contract.md`
 
-| Screen Type | Search Terms |
-|-------------|-------------|
-| Hero/opener | "awwwards site of the year hero", "cinematic web intro 2025" |
-| Data dashboard | "best data visualization websites", "stripe dashboard design" |
-| Form/calculator | "best web form UX design", "interactive calculator website" |
-| Map/interactive | "interactive map website awwwards", "3D web experience" |
-| Chat/AI interface | "best AI chatbot UI 2025", "conversational interface design" |
-| Card grid | "apple product page scroll", "metric card design system" |
-| Mobile responsive | "best mobile web experience awwwards", "mobile-first design" |
+---
+
+## Stage 0.5: DESIGN SYSTEM
+
+**Goal:** Select and customize a Stitch preset, define the three-layer token architecture, create DESIGN.md.
+
+**Load:** `references/design-system-architecture.md`
+
+**Process:**
+
+1. Read the Design Contract from Stage 0
+2. Map discovery answers to Stitch preset selection (see mapping table in reference file)
+3. Set up Stitch project and design system:
+
+### Stitch Setup
+
+1. **Check for existing project:** Call `list_projects`
+2. **Create project if needed:** Call `create_project` with site name
+3. **Create design system from preset + customizations:**
+   Call `create_design_system` with:
+   - Base preset from discovery (e.g., Luxury, Beam, Kinetic)
+   - `headlineFont` / `bodyFont`: Map from contract's font choices to Stitch enums
+   - `customColor`: Primary brand color (hex) from contract
+   - `colorMode`: LIGHT or DARK from contract
+   - `roundness`: Map contract radius to ROUND_FOUR / ROUND_EIGHT / ROUND_TWELVE / ROUND_FULL
+   - `designMd`: Full design personality brief + token foundation + contract directives
+   - `colorVariant`: Choose based on brand personality (TONAL_SPOT default, VIBRANT for bold, MONOCHROME for minimal)
+4. **Store IDs:** Save to `.design-forge/stitch.json`
+
+### Three-Layer Token Architecture
+
+Define tokens at three levels (see reference file for full architecture):
+
+```
+PRIMITIVE -> Raw values (colors, sizes, durations)
+SEMANTIC  -> Purpose-driven mappings (color-background-primary -> brand-500)
+COMPONENT -> Implementation-specific (button-bg-primary -> color-primary)
+```
+
+### GATE 0.5: Design System Review
+
+```
+GATE 0.5: Design System Review
+
+Here's the design system I've configured:
+
+PRESET: {name} -- {why this matches the brand}
+CUSTOMIZATIONS:
+- Primary: {color} ({emotional rationale})
+- Fonts: {display} + {body} ({pairing name from reference})
+- Radius: {value} ({feel it creates})
+- Mode: {light/dark} ({rationale})
+
+TOKEN EXAMPLES:
+- color-background-primary: {value}
+- color-text-primary: {value}
+- spacing-section: {value}
+
+Does this feel right? Your options:
+- APPROVE     -> Design system locked, move to research
+- SWAP PRESET -> Try a different preset base
+- ADJUST      -> Change specific tokens (tell me which)
+- COMPARE     -> Show me 2 presets side by side
+```
+
+**After APPROVE:** Update Design Contract with design system details. Write DESIGN.md.
+
+---
+
+## Stage 1: RESEARCH
+
+**Goal:** Ground the design in real-world excellence. Never design from memory.
+
+**Process:**
+
+1. Identify the screen type (e.g., "cinematic hero", "pricing page", "calculator form")
+2. Web search for 4 reference sites using the competitive analysis framework:
+   - 2 direct competitors (same industry/product type)
+   - 1 indirect competitor (different industry, similar UX pattern)
+   - 1 aspirational benchmark (Awwwards SOTD or equivalent)
+3. For each reference, extract with traffic-light scoring:
+
+| Dimension | Score | Notes |
+|-----------|-------|-------|
+| Layout | GREEN/YELLOW/RED | {specific pattern} |
+| Color | GREEN/YELLOW/RED | {palette approach} |
+| Typography | GREEN/YELLOW/RED | {type treatment} |
+| Motion | GREEN/YELLOW/RED | {interaction quality} |
+| Performance | GREEN/YELLOW/RED | {load speed, CWV} |
+
+4. Synthesize: which GREEN patterns to combine, aligned with Design Contract
+5. Save to `.design-forge/research/{screen-name}.md`
 
 ### GATE 1: Research Review
-
-Present the 4 references with descriptions of what to steal from each, plus the synthesis. Ask:
 
 ```
 GATE 1: Research Review
 
-I found 4 inspiration references for {screen name}:
-1. {Ref 1} — stealing: {pattern}
-2. {Ref 2} — stealing: {pattern}
-3. {Ref 3} — stealing: {pattern}
-4. {Ref 4} — stealing: {pattern}
+4 references for {screen name}:
+
+1. {Ref 1 -- direct competitor} -- steal: {pattern}
+2. {Ref 2 -- direct competitor} -- steal: {pattern}
+3. {Ref 3 -- indirect competitor} -- steal: {pattern}
+4. {Ref 4 -- aspirational benchmark} -- steal: {pattern}
+
+Synthesis: {combined approach aligned with Design Contract}
+
+Contract alignment:
+- Preset {X} supports these patterns: YES/NO
+- Brand personality match: {how it aligns}
+- Deal-breaker check: {no violations}
+
+Your options:
+- APPROVE    -> References locked, move to design
+- SWAP {N}   -> Replace reference N (tell me what to look for)
+- ADD        -> Keep all 4 but also investigate {specific site/style}
+- REDIRECT   -> Wrong direction, search for {new terms}
+```
+
+**After APPROVE:** Update Design Contract with Research Directives.
+
+---
+
+## Stage 2: EXPLORE -- Stitch First Draft
+
+**Goal:** Create the first design via Stitch incorporating the full Design Contract.
+
+**Load:** Relevant reference files for the screen type (typography, color, layout, motion, component patterns)
+
+**Process:**
+
+1. Read the full Design Contract (`.design-forge/contract.md`)
+2. Read research (`.design-forge/research/{screen-name}.md`)
+3. Read DESIGN.md
+4. Verify Stitch design system is applied
+5. Build the Stitch prompt using the Contract Injection Template (below)
+6. Call `generate_screen_from_text` with `modelId: GEMINI_3_1_PRO`
+7. **Validate output against contract** before presenting to user
+
+### Contract Injection Template (CRITICAL -- used for ALL Stitch calls)
+
+Every Stitch prompt MUST follow this structure:
+
+```
+You are a world-class UI/UX design expert with 30 years of experience. You have won multiple Awwwards Site of the Day, FWA awards, and Webby Awards. Your design philosophy combines Swiss precision with emotional storytelling. Every pixel is intentional. Every whitespace is architectural.
+
+Your principles:
+- LESS IS MORE: Remove everything that doesn't serve the user
+- EVERY DETAIL MATTERS: Spacing, typography, color -- all mathematically precise
+- EMOTION THROUGH RESTRAINT: Premium quality from what you leave out
+- AWARD-WINNING STANDARD: Every screen must be worthy of Awwwards SOTD
+
+CRITICAL: Generate EXACTLY what is described. NO sidebars, NO navigation panels, NO dashboard layout, NO extra UI chrome unless explicitly requested.
+
+=== DESIGN CONTRACT (NON-NEGOTIABLE) ===
+
+{Paste full Design Contract here -- identity, design system, research directives, accumulated feedback, hard constraints}
+
+=== SCREEN REQUIREMENTS ===
+
+{From SITE.md -- what this specific screen needs}
+
+=== RESEARCH PATTERNS TO INCORPORATE ===
+
+1. From {Ref 1}: {specific pattern}
+2. From {Ref 2}: {specific pattern}
+3. From {Ref 3}: {specific pattern}
+4. From {Ref 4}: {specific pattern}
 
 Synthesis: {combined approach}
 
-Your options:
-- APPROVE  → These references are solid, let's design
-- SWAP     → Replace reference {N} with something else (tell me what)
-- ADD      → Keep all 4 but also look at {specific site/style}
-- REDIRECT → Wrong direction entirely, search for {new terms}
+=== EXPLICIT EXCLUSIONS ===
+
+{From contract hard constraints + deal-breakers}
+DO NOT include: {list everything that should NOT appear}
+
+=== ACCUMULATED HUMAN DIRECTION ===
+
+{All feedback from previous gates, formatted as bullet directives}
 ```
 
-**Do NOT proceed to Stage 2 until user approves the references.**
+### Post-Generation Validation
 
----
+Before presenting to user, check the Stitch output against the contract:
 
-### Stage 2: EXPLORE — SuperDesign Draft
+| Contract Directive | Output Match? | Issue |
+|---|---|---|
+| Preset: {X} | YES/NO | {mismatch} |
+| Primary color: {hex} | YES/NO | {mismatch} |
+| Font: {display} | YES/NO | {mismatch} |
+| No {exclusion} | YES/NO | {violation} |
+| Research pattern: {X} | YES/NO | {miss} |
 
-**Goal:** Create the first design incorporating all 4 approved research references.
-
-**Design Standards Check:** Before writing the SuperDesign prompt, verify the design brief aligns with:
-- **The Three Laws**: Does the prompt enforce restraint, coherence, and sensory reward?
-- **The token foundation**: Is the prompt using the correct spacing, radius, transitions, and z-index values from DESIGN.md?
-- **The non-negotiable standards**: Does the prompt specify the correct type scale, max-widths, motion easing, and accessibility requirements?
-
-**Process:**
-
-1. Read ALL `.superdesign/init/` context files
-2. Read `.superdesign/research/{screen-name}.md`
-3. Read `DESIGN.md` (especially Section 6)
-4. Build the SuperDesign prompt combining:
-   - Design system constraints from DESIGN.md
-   - Specific patterns from the 4 references
-   - Screen requirements from SITE.md
-   - Component patterns from init/components.md
-   - Any specific feedback from Gate 1
-   - The Three Laws of Design as explicit directives
-5. Run `superdesign create-design-draft` with:
-   - `-p` flag: the combined prompt
-   - `--context-file`: design-system.md, globals.css, relevant init files
-6. Save the draft screenshot and ID
-
-**Prompt template:**
-
-```
-Design a {screen type} for {project name}.
-
-DESIGN SYSTEM: {Copy Section 6 from DESIGN.md}
-
-DESIGN LAWS TO ENFORCE:
-- Law 1 (Restraint): Remove anything that doesn't serve a purpose. White space is intentional architecture.
-- Law 2 (Coherence): Every radius, spacing, and color decision must follow the token system exactly.
-- Law 3 (Sensory Reward): Every interactive element must have a hover/active state. Scroll reveals must feel physical.
-
-SCREEN REQUIREMENTS: {From SITE.md}
-
-INSPIRATION REFERENCES (incorporate these patterns):
-1. From {Ref 1}: {specific pattern to steal}
-2. From {Ref 2}: {specific pattern to steal}
-3. From {Ref 3}: {specific pattern to steal}
-4. From {Ref 4}: {specific pattern to steal}
-
-SYNTHESIS: {Combined approach from research}
-
-HUMAN DIRECTION: {Any specific notes from Gate 1}
-```
+If any NO: regenerate or edit before presenting. Do NOT show contract-violating output to the user.
 
 ### GATE 2: First Impression
 
-Present the first draft and ask for a quick direction check. This is NOT about perfection — it's about whether the overall direction is right.
-
 ```
-GATE 2: First Impression
+GATE 2: First Impression -- {screen name}
 
-Here's the first design draft for {screen name}: {show screenshot}
+Here's the first Stitch design: {show/describe output}
 
-Quick direction check on these dimensions:
-1. LAYOUT    — Is the structure heading the right way?
-2. COLOUR    — Do the colours feel right for this screen?
-3. TYPOGRAPHY — Are the font choices landing?
-4. VIBE      — Does it feel like it could be world-class with refinement?
-5. CONTENT   — Is the right content represented?
+Contract validation: All {N} directives met.
+
+Quick direction check (Awwwards-weighted):
+1. DESIGN (40%)     -- Does the visual system feel right?
+2. USABILITY (30%)  -- Is the hierarchy clear? Navigation intuitive?
+3. CREATIVITY (20%) -- Does it feel original, not template-like?
+4. CONTENT (10%)    -- Is the right content represented?
 
 Your options:
-- GOOD DIRECTION → Move to variations (I'll create 2 alternatives)
-- ADJUST         → Tweak the prompt and regenerate (tell me what to change)
-- WRONG DIRECTION → Go back to research (the references aren't translating)
+- GOOD DIRECTION -> Move to variations
+- ADJUST         -> Tweak and regenerate (tell me what)
+- WRONG DIRECTION -> Go back to research
 ```
 
-**Do NOT move to variations if the direction is wrong. Fix the foundation first.**
+**After feedback:** Update Design Contract Accumulated Feedback section.
 
 ---
 
-### Stage 3: ITERATE — Design Variations
+## Stage 3: ITERATE -- Stitch Variants
 
-**Goal:** Explore 2 variations that push different influences, then pick the winner with user input.
+**Goal:** Explore variations, then pick the winner.
 
 **Process:**
 
-1. Run `superdesign iterate-design-draft` with 2 variation prompts:
-   - **Variant A:** Push influence of Reference 1 + 2 (e.g., "more cinematic, darker, bolder")
-   - **Variant B:** Push influence of Reference 3 + 4 (e.g., "cleaner, more minimal, lighter")
-   - Incorporate any feedback from Gate 2
-2. Present all 3 designs side by side (original + 2 variants)
-
-**Craft Audit:** When evaluating variations, check for these award-winning details. The winning variation should score highest on this checklist:
-
-- [ ] **Custom Cursor Interaction**: Does the cursor transform near CTAs or interactive zones?
-- [ ] **Magnetic Buttons**: Do primary CTAs have a 4–8px magnetic pull effect with elastic easing?
-- [ ] **Text Reveal Animations**: Do headings reveal character-by-character or word-by-word with mask/overflow-hidden?
-- [ ] **Parallax Depth**: Are there 3 parallax layers (background 0.3x, midground 0.6x, foreground 1x) for depth?
-- [ ] **Grain and Texture**: Is there a subtle SVG noise overlay (3–5% opacity) adding photographic warmth?
-- [ ] **Smooth Scroll with Momentum**: Is Lenis (or equivalent) providing physics-based scroll momentum?
-- [ ] **Color-Shifting Gradients**: Are background gradients animated via CSS `@property` for a living quality?
-- [ ] **Loading Choreography**: Is there an orchestrated entrance sequence (0–1000ms) instead of a page pop?
-- [ ] **Footer as a Destination**: Does the footer have large typography, a CTA, and a visual moment?
-- [ ] **Easter Egg**: Is there a hidden delight element (console art, secret key combo, hover surprise)?
-
-Not every design needs all 10 — but the best designs incorporate at least 3–5 of these craft details.
+1. Call `generate_variants` with full contract injection:
+   - `modelId`: GEMINI_3_1_PRO
+   - `prompt`: Contract Injection Template + variation direction + Gate 2 feedback
+   - `variantOptions`:
+     - `variantCount`: 2 (or 3 for complex screens)
+     - `creativeRange`: EXPLORE (default) or REFINE (if Gate 2 said "good direction")
+     - `aspects`: Choose which to vary (LAYOUT, COLOR_SCHEME, IMAGES, TEXT_FONT, TEXT_CONTENT)
+2. Validate ALL variants against the contract
+3. Present all designs (original + variants) for comparison
 
 ### GATE 3: Pick Winner
 
 ```
-GATE 3: Pick Winner
+GATE 3: Pick Winner -- {screen name}
 
-Three design directions for {screen name}:
+Three directions (all contract-validated):
 
-ORIGINAL: {description of original approach}
-VARIANT A: {description — pushes Ref 1+2 influence}
-VARIANT B: {description — pushes Ref 3+4 influence}
+ORIGINAL: {description}
+VARIANT A: {description -- what it pushes differently}
+VARIANT B: {description -- what it pushes differently}
 
-Review each on:
-1. LAYOUT    — Which structure works best?
-2. COLOUR    — Which colour approach wins?
-3. TYPOGRAPHY — Which type treatment is strongest?
-4. VIBE      — Which feels most world-class?
-5. CONTENT   — Which presents the content best?
+Compare on Awwwards criteria:
+1. DESIGN (40%)     -- Which visual system is strongest?
+2. USABILITY (30%)  -- Which hierarchy and flow works best?
+3. CREATIVITY (20%) -- Which feels most original?
+4. CONTENT (10%)    -- Which presents content best?
 
 Your options:
-- PICK ONE     → "Go with {Original/A/B}" (move to production)
-- HYBRID       → "Take {element} from A and {element} from B" (one more iteration)
-- NONE         → "None are right" — I'll create 2 new variants with your direction
-- START OVER   → Go back to explore with a new prompt
+- PICK ONE  -> "Go with {X}" (move to polish)
+- HYBRID    -> "Take {element} from A and {element} from B"
+- NONE      -> "None work" -- new variants with your direction
+- RESTART   -> Back to explore with new prompt
 ```
 
-**Hybrid rule:** If user requests a hybrid, run ONE more iteration with specific merge instructions. Then present the hybrid at a mini-gate:
+**Hybrid rule:** ONE merge iteration, then mini-gate. Max 3 total rounds at this stage.
 
-```
-HYBRID CHECK: Does this capture what you wanted?
-- YES → Move to production
-- CLOSE → One more small tweak: {tell me}
-- NO → Let's try a different combination
-```
-
-**Max iterations:** 3 rounds at this stage. If not converging after 3, STOP and ask: "We've done 3 rounds — should we step back and re-research, or pick the closest and refine in production?"
+**After feedback:** Update Design Contract.
 
 ---
 
-### Stage 4: GENERATE — Stitch Production HTML (2 Variations)
+## Stage 4: REFINE -- Stitch Polish
 
-**Goal:** Convert the winning design direction into production-quality HTML via Stitch. ALWAYS generate 2 variations.
+**Goal:** Polish the winner into production-ready quality.
 
-### Stitch Prompt Rules (CRITICAL — follow exactly)
-
-Stitch tends to invent layouts, add sidebars, navigation panels, dashboards, and UI chrome that was never in the approved design. You MUST prevent this:
-
-1. **Start every prompt with explicit exclusions:** "CRITICAL: Reproduce the approved design EXACTLY. NO sidebars, NO navigation panels, NO dashboard layout, NO menus, NO tabs, NO extra UI chrome."
-2. **Describe every element with exact specs:** hex colours, font names, font sizes in px, exact positions (top-left, center, bottom-right), exact dimensions (%, px, vw).
-3. **List what should NOT appear:** If the design is a full-screen cinematic, say "The ENTIRE viewport is the experience. No standard web layout components."
-4. **Include all accumulated human feedback** from Gates 1-3 as explicit directives.
-5. **The more specific the prompt, the closer Stitch gets.** Vague prompts produce wrong layouts. Pixel-level descriptions produce matches.
-
-### Process
-
-1. Write TWO hyper-specific Stitch prompts:
-   - **Variation A:** Faithful reproduction of the approved SuperDesign
-   - **Variation B:** Same content and layout, but push one design element further (e.g., bolder typography, more atmospheric effects, different emphasis)
-   - Both prompts include: Design System block, exact layout, hex colours, font specs, component patterns, reference patterns, explicit exclusions
-2. Get or create Stitch project (check `stitch.json`)
-3. Call `generate_screen_from_text` TWICE — once per variation:
-   - `projectId`: from stitch.json
-   - `prompt`: the variation-specific prompt
-   - `deviceType`: DESKTOP (generate mobile separately later)
-4. Download BOTH outputs:
-   - HTML to `queue/{screen-name}-a.html` and `queue/{screen-name}-b.html`
-   - Screenshots to `queue/{screen-name}-a.png` and `queue/{screen-name}-b.png`
-5. Present both side-by-side for Gate 4
-
-### GATE 4: Fidelity Check (2 Variations)
-
-Compare BOTH Stitch outputs against the winning SuperDesign direction.
-
-```
-GATE 4: Fidelity Check
-
-Winning design (from SuperDesign): {show/describe}
-Stitch Variation A: {show screenshot — faithful reproduction}
-Stitch Variation B: {show screenshot — pushed variation}
-
-Which matches the approved design best?
-
-1. LAYOUT    — Does the structure match?
-2. COLOUR    — Are colours accurate?
-3. TYPOGRAPHY — Are fonts/sizes right?
-4. VIBE      — Does the production version capture the energy?
-5. CONTENT   — Is all content present and correct?
-
-Your options:
-- PICK A        → Variation A matches, use it
-- PICK B        → Variation B is better, use it
-- HYBRID        → Combine elements from A and B
-- CLOSE ENOUGH  → Minor differences I can live with, proceed with {A/B}
-- REGENERATE    → Neither matches, try again with tighter prompts
-- DESIGN ISSUE  → The design itself needs more work (back to Stage 3)
-```
-
-**Regeneration limit:** Max 2 rounds (4 total variations). If Stitch can't match after 2 rounds, note the gaps and proceed — they'll be fixed in code implementation.
-
----
-
-### Stage 5: INTEGRATE — Site Assembly + Baton
-
-**Goal:** Add the generated page to the site and prepare the next screen.
+**Load:** `references/performance-and-craft.md`
 
 **Process:**
 
-1. Move `queue/{screen-name}.html` to `site/public/{screen-name}.html`
-2. Fix asset paths (make relative to public/)
-3. Wire navigation links (replace any `href="#"` with real paths)
-4. Ensure header/footer consistency with existing pages
-5. Update `SITE.md`:
-   - Mark page as `[x]` in Section 4 (Sitemap)
-   - Remove consumed ideas from Section 6
-6. Save all feedback to `.superdesign/feedback/{screen-name}.md`
+1. Call `edit_screens` with full contract + all accumulated feedback
+2. Apply specific refinements from Gate 3
+3. Optionally call `apply_design_system` to ensure token consistency
+4. Run Craft Checklist and Squint Test
+5. Validate against contract + performance standards
+
+### GATE 4: Polish Check
+
+```
+GATE 4: Polish Check -- {screen name}
+
+Refined design: {show/describe output}
+
+Contract validation: All directives met.
+Craft score: {N}/10 craft details incorporated
+Squint test: PASS/FAIL
+
+Review (Awwwards-weighted):
+1. DESIGN (40%)     -- Pixel-perfect? Coherent with system?
+2. USABILITY (30%)  -- Production-ready? All states covered?
+3. CREATIVITY (20%) -- Still original after polish?
+4. CONTENT (10%)    -- All content present, correct, formatted?
+
+Your options:
+- SHIP READY    -> Move to integration
+- TWEAK         -> One more edit pass (tell me what)
+- MORE VARIANTS -> Back to Stage 3
+- DESIGN ISSUE  -> Fundamental problem -- back to Stage {N}
+```
+
+**Refinement limit:** Max 3 edit passes.
+
+---
+
+## Stage 5: INTEGRATE -- Site Assembly
+
+**Goal:** Wire the approved screen into the site.
+
+**Process:**
+
+1. Export screen from Stitch
+2. Convert to project framework (Next.js/Astro/etc. per contract)
+3. Wire navigation links
+4. Ensure header/footer consistency
+5. Update SITE.md (mark page complete)
+6. Save all feedback to `.design-forge/feedback/{screen-name}.md`
 
 ### GATE 5: Final Sign-Off
 
 ```
-GATE 5: Final Sign-Off for {screen name}
+GATE 5: Final Sign-Off -- {screen name}
 
-The screen is integrated into the site. Here's the final state:
-- Page: site/public/{screen-name}.html
-- Screenshot: {show final screenshot}
-- Navigation: {links wired to/from this page}
+Screen integrated into site:
+- Page: {path}
+- Navigation: {links wired}
+- Consistency: {design system coherence with other pages}
 
 Final review:
-1. LAYOUT    — Does it work in the context of the full site?
-2. COLOUR    — Consistent with other pages?
-3. TYPOGRAPHY — Consistent with design system?
-4. VIBE      — Still world-class in context?
-5. CONTENT   — Anything missing before we move on?
+1. DESIGN      -- Works in full site context?
+2. USABILITY   -- Consistent navigation and flow?
+3. CREATIVITY  -- Quality maintained in context?
+4. CONTENT     -- Anything missing?
 
 Your options:
-- SHIP IT        → This screen is done. Move to next screen.
-- MINOR FIXES    → Small tweaks needed (list them) — fix and re-check
-- MAJOR REVISION → Significant issues — go back to {Stage N}
+- SHIP IT       -> Done. Next screen.
+- MINOR FIXES   -> Small tweaks (list them)
+- MAJOR REVISION -> Back to Stage {N}
 ```
 
 **After SHIP IT:**
-1. Write `next-prompt.md` baton for the next screen
-2. Log final feedback to `.superdesign/feedback/{screen-name}.md`
-3. Announce: "Screen {N} complete. Next up: {next screen name}. Ready to start research?"
+1. Update Design Contract with final feedback
+2. Log to `.design-forge/feedback/{screen-name}.md`
+3. Announce next screen from SITE.md
 
 ---
 
-## Part 5: The Craft Details That Win Awards
+## Craft Checklist
 
-These 10 details are the difference between a good site and a Site of the Day. They are not decorations — they are signals of craft mastery. Implement at least 3–5 on every project.
+Before presenting at Gate 4+, score against these. Aim for 3-5 per project:
 
-### 1. Custom Cursor Interactions
-
-The cursor is the user's primary point of contact with your interface. A custom cursor signals immediately that this is not a template site.
-
-```css
-/* Hide default cursor on interactive elements */
-[data-cursor] { cursor: none; }
-
-/* Custom cursor element */
-.cursor {
-  position: fixed;
-  width: 12px;
-  height: 12px;
-  background: var(--color-primary);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: var(--z-cursor);
-  transform: translate(-50%, -50%);
-  transition:
-    width 0.3s var(--ease-out-expo),
-    height 0.3s var(--ease-out-expo),
-    background 0.3s var(--ease-out-expo);
-  mix-blend-mode: difference;
-}
-
-/* Expand on hover over links/buttons */
-.cursor.is-hovering {
-  width: 48px;
-  height: 48px;
-}
-```
-
-The cursor should respond to context: small dot on empty space, expanding circle on clickable elements, text cursor on text, custom icon for special interactions.
-
-### 2. Magnetic Buttons
-
-Primary CTAs should feel physically attracted to the cursor when it's nearby. This creates a satisfying, almost physical interaction.
-
-The button pulls toward the cursor by 4–8px. The pull uses elastic easing. On mouseleave, it springs back.
-
-```javascript
-const magneticButtons = document.querySelectorAll('[data-magnetic]');
-
-magneticButtons.forEach((btn) => {
-  btn.addEventListener('mousemove', (e) => {
-    const rect = btn.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    // Pull factor: 0.3 for subtle, 0.5 for strong
-    btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
-  });
-
-  btn.addEventListener('mouseleave', () => {
-    btn.style.transform = 'translate(0, 0)';
-    btn.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
-  });
-
-  btn.addEventListener('mouseenter', () => {
-    btn.style.transition = 'none'; // Immediate tracking while inside
-  });
-});
-```
-
-### 3. Text Reveal Animations
-
-Headings that reveal themselves create anticipation and feel cinematic. Two approaches:
-
-**Character split (for short hero headlines):**
-Each character slides up from behind a mask. The word "DESIGN" arrives one letter at a time.
-
-**Word split (for longer phrases):**
-Each word arrives separately with a 75ms stagger. Feels like a typewriter but smoother.
-
-Both require `overflow: hidden` on the parent element to create the mask effect. Never reveal letters by fading — they must slide from behind a hidden edge.
-
-```tsx
-const TextReveal = ({ text, delay = 0 }) => (
-  <span style={{ display: 'inline-flex', overflow: 'hidden' }}>
-    {text.split('').map((char, i) => (
-      <motion.span
-        key={i}
-        initial={{ y: '100%' }}
-        whileInView={{ y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: delay + i * 0.03, ease: [0.16, 1, 0.3, 1] }}
-        style={{ display: 'inline-block' }}
-      >
-        {char === ' ' ? '\u00A0' : char}
-      </motion.span>
-    ))}
-  </span>
-);
-```
-
-### 4. Parallax Depth
-
-Three layers, three speeds. This creates a sense that the screen has physical depth.
-
-- **Background layer**: `0.3x` scroll speed. Barely moves. Creates the sensation of a distant horizon.
-- **Midground layer**: `0.6x` scroll speed. Content images, subtle elements.
-- **Foreground layer**: `1x` scroll speed (normal). The primary content.
-
-Implement with CSS `perspective` for zero JavaScript:
-```css
-.parallax-container {
-  height: 100svh;
-  overflow-y: auto;
-  perspective: 1px;
-  perspective-origin: center;
-}
-.parallax-bg {
-  transform: translateZ(-2px) scale(3);
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-}
-```
-
-Or use JavaScript-driven scroll listeners for more control. Never use `background-attachment: fixed` — it's a jank machine.
-
-### 5. Grain and Texture Overlays
-
-Pure flat color feels digital and cold. A subtle grain overlay (3–5% opacity) adds photographic warmth and makes the design feel physical, like a printed piece.
-
-```css
-.grain-overlay::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  opacity: 0.03;
-  pointer-events: none;
-  z-index: 9999;
-  mix-blend-mode: overlay;
-}
-```
-
-This overlay sits on top of everything using `mix-blend-mode: overlay`. At 3% opacity, it's invisible to most users consciously — but subconsciously, the design feels more premium.
-
-### 6. Smooth Scroll with Momentum
-
-Native browser scroll is abrupt. Lenis provides momentum-based smooth scrolling that makes the page feel like a physical object you're sliding.
-
-```javascript
-import Lenis from '@studio-freight/lenis';
-
-const lenis = new Lenis({
-  duration: 1.2,
-  easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // exponential ease-out
-  smoothWheel: true,
-  touchMultiplier: 2,
-});
-
-function raf(time) {
-  lenis.raf(time);
-  requestAnimationFrame(raf);
-}
-
-requestAnimationFrame(raf);
-```
-
-Always integrate Lenis with Framer Motion's `useScroll` and `GSAP ScrollTrigger` when applicable. Without this integration, scroll-based animations will be choppy.
-
-### 7. Color-Shifting Gradients
-
-Static gradients feel designed but fixed. Animated gradients feel alive. CSS `@property` enables smooth interpolation between gradient states — something that was impossible before.
-
-```css
-@property --gradient-angle {
-  syntax: '<angle>';
-  initial-value: 135deg;
-  inherits: false;
-}
-
-.living-gradient {
-  --gradient-angle: 135deg;
-  background: linear-gradient(
-    var(--gradient-angle),
-    #667eea 0%,
-    #764ba2 50%,
-    #f093fb 100%
-  );
-  animation: gradient-shift 8s ease-in-out infinite;
-}
-
-@keyframes gradient-shift {
-  0%, 100% { --gradient-angle: 135deg; }
-  50% { --gradient-angle: 315deg; }
-}
-```
-
-Use this for hero backgrounds, section dividers, and button backgrounds. Never animate more than one gradient simultaneously — it becomes visually overwhelming.
-
-### 8. Loading Choreography
-
-The page load should feel like a performance, not a wall of content suddenly appearing. Orchestrate the entrance:
-
-```
-0ms:    Nav fades in
-200ms:  Hero headline slides up
-500ms:  Subtitle fades in
-700ms:  CTA scales in with spring bounce
-400ms:  Hero image fades in (parallel with subtitle)
-900ms:  Social proof slides up
-```
-
-This sequence takes less than 1 second but makes the page feel considered and cinematic. Every element knows when it's supposed to arrive.
-
-```css
-.hero__headline { animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 200ms both; }
-.hero__subtitle { animation: fadeIn 0.6s ease-out 500ms both; }
-.hero__cta { animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 700ms both; }
-```
-
-### 9. Footer as a Destination
-
-Most footers are afterthoughts — a list of links dumped below the real content. An Awwwards footer is a destination: it has a visual moment, a CTA, and a final brand impression that sends the user away with a memory.
-
-Three approaches:
-- **Large statement typography**: The brand name or a final headline at 100–200px, almost filling the footer
-- **Dark inversion**: If the site is light, the footer goes deep dark — a dramatic tonal shift
-- **Animated visual**: A looping animation, a parallax image, or a gradient that only appears in the footer
-
-The footer must also answer: "What should the user do next?" If the answer is nothing, they leave without converting. Always include a final CTA.
-
-### 10. Easter Eggs
-
-Easter eggs are small hidden interactions that reward curious users. They turn visitors into fans.
-
-Examples:
-- **Console art**: ASCII art of the logo/mascot when DevTools opens
-- **Konami code**: Arrow up, up, down, down, left, right, left, right, B, A — triggers a brand moment
-- **Cursor hold**: Hold click for 3 seconds — something unexpected happens
-- **Shake to shuffle**: Tilt on mobile triggers a random color palette switch
-- **Secret link**: An invisible click target in the footer that leads to a "you found it!" page
-
-Easter eggs are not required, but they generate enormous word-of-mouth. When a developer discovers the console art, they tweet about it. That tweet is worth a thousand impressions.
+- [ ] Custom cursor interaction (expands on interactive elements)
+- [ ] Magnetic buttons (4-8px pull with elastic easing)
+- [ ] Text reveal animations (GSAP SplitText, overflow-hidden mask)
+- [ ] Parallax depth (3 layers: 0.3x, 0.6x, 1x)
+- [ ] Grain/texture overlay (3-5% opacity SVG noise)
+- [ ] Smooth scroll with Lenis momentum
+- [ ] Color-shifting gradients (CSS @property animation)
+- [ ] Loading choreography (orchestrated entrance 0-1000ms)
+- [ ] Footer as destination (visual moment + final CTA)
+- [ ] Easter egg (console art, hidden interaction)
 
 ---
 
-## Part 6: Tech Stack Mandate
+## Animation Standards (GSAP)
 
-Every project built with this design system uses this tech stack. No exceptions without explicit client constraint.
+All animation uses GSAP + ScrollTrigger:
 
-### The Stack
-
-| Layer | Technology | Why |
-|-------|-----------|-----|
-| Framework | Next.js App Router + RSC | Best-in-class performance, SEO, and DX |
-| Styling | Tailwind CSS + CSS custom properties | Design tokens in CSS, utility classes for speed |
-| Components | shadcn/ui | Unstyled, accessible base components |
-| Animation | Framer Motion | Best React animation library, integrates with Lenis |
-| Scroll | Lenis (`@studio-freight/lenis`) | Physics-based smooth scroll |
-| Fonts | `next/font` (Google or local) | Zero layout shift, automatic optimization |
-| Images | `next/image` | WebP conversion, lazy loading, blur placeholders |
-| CMS | Sanity (if content-managed) | Best developer experience, real-time preview |
-| Deployment | Vercel | Native Next.js hosting, edge network, analytics |
-
-### Code Quality Checkpoints
-
-Before any screen is marked complete, verify:
-
-- [ ] **Lighthouse Performance**: ≥ 90 (run in incognito, desktop)
-- [ ] **Largest Contentful Paint**: < 2.5s on simulated 4G
-- [ ] **Cumulative Layout Shift**: < 0.1 (no layout shifts after fonts load)
-- [ ] **First Input Delay**: < 100ms
-- [ ] **Accessibility score**: ≥ 95
-- [ ] **No console errors** in production build
-- [ ] **No `any` TypeScript types** in component files
-- [ ] **All images have `alt` text** (meaningful, not empty)
-- [ ] **All interactive elements keyboard-navigable**
-- [ ] **`prefers-reduced-motion`** handled on all animations
+- **Always `gsap.fromTo()`** -- never `gsap.from()` (prevents stuck-at-initial-state bugs with Lenis)
+- **Always `useGSAP` hook** from `@gsap/react` for cleanup
+- **Always `gsap.matchMedia`** with `(prefers-reduced-motion: no-preference)` and reduce fallback
+- **Custom cursor:** plain `requestAnimationFrame` + `lerp`, NOT `gsap.quickTo`
+- **Lenis package:** `lenis` (not deprecated `@studio-freight/lenis`)
+- **Easing:** Named curves from design tokens, never `linear` or default `ease`
 
 ---
 
-## Part 7: Quick Decision Matrix
+## Tech Stack
 
-When in doubt, use this table to make fast design decisions consistently:
+Read from project config. Defaults if not specified:
 
-| Decision | Default Choice | Alternative (and when) |
-|---------|----------------|------------------------|
-| Heading font | Clash Display or Cabinet Grotesk | Playfair Display (editorial/luxury) |
-| Body font | General Sans or Satoshi | Inter (only for dashboards/apps) |
-| Section padding | `clamp(48px, 8vw, 128px)` | `clamp(32px, 5vw, 80px)` (compact sections) |
-| Button hover | `translateY(-2px)` + shadow lift | Scale 1.02 (for icon buttons) |
-| Hero height | 100svh (full viewport) | 80vh (when content below needs peeking) |
-| Background | Off-white (#FAFAF9 warm, #F8FAFC cool) | Dark (#09090B) for premium/night mode |
-| Mobile nav | Full-screen overlay with staggered links | Bottom sheet (for app-like interfaces) |
-| Image format | WebP with AVIF fallback | SVG for icons, JPEG for photos over 2MB |
-| Page transitions | Crossfade (opacity + y: 12px) | Slide (for clearly sequential flows) |
-| Loading states | Skeleton screens | Spinner only for individual async actions |
-| Error states | Inline validation with icon + text | Toast for system-level errors |
-| Easing (entrance) | `cubic-bezier(0.16, 1, 0.3, 1)` | `cubic-bezier(0.34, 1.56, 0.64, 1)` (bouncy) |
-| Easing (morph) | `cubic-bezier(0.83, 0, 0.17, 1)` | `cubic-bezier(0.87, 0, 0.13, 1)` (dramatic) |
-| Card radius | `--radius-lg` (12px) | `--radius-2xl` (24px) for softer feel |
-| Grid max-width | 1280px marketing | 1440px dashboards |
+| Layer | Default | Alternatives |
+|-------|---------|-------------|
+| Framework | Next.js App Router | Astro, SvelteKit, Vite |
+| Styling | Tailwind CSS v4 + CSS custom properties | CSS Modules |
+| Components | shadcn/ui | Radix primitives |
+| Animation | GSAP + ScrollTrigger | CSS keyframes for simple motion |
+| Scroll | Lenis (`lenis`) | Native smooth scroll |
+| Fonts | `next/font` (local preferred) | Google Fonts |
+| Images | `next/image` | `<picture>` with AVIF/WebP |
+| Deployment | Vercel | Netlify, Cloudflare |
 
 ---
 
-## Part 8: Quality Enforcement
+## Quality Enforcement
 
 ### The Squint Test
+Squint until blurry. Must still identify:
+1. Where the hero is (most dominant zone)
+2. Where the primary CTA is (bright spot)
+3. Visual hierarchy (3+ levels of weight)
+4. Rhythm (alternating section density)
+5. Color story (one dominant palette)
 
-Squint at the design until it's blurry. You should still be able to identify:
-1. **Where the hero is** — the most visually dominant zone
-2. **Where the primary CTA is** — a bright spot that stands out
-3. **The visual hierarchy** — at least 3 levels of visual weight
-4. **The overall rhythm** — sections should have alternating density
-5. **The color story** — one dominant palette reading
+If any fails -> fix macro-composition before details.
 
-If you can't identify all 5 while squinting, the design lacks sufficient contrast and hierarchy. Stop designing details until the macro-composition is correct.
+### Awwwards Scoring (Gate 4+)
 
-### Quick Reference
+| Criterion | Weight | Score 1-10 | Notes |
+|-----------|--------|------------|-------|
+| Design | 40% | | Visual hierarchy, typography, color, micro-details |
+| Usability | 30% | | Navigation, performance, responsive, accessibility |
+| Creativity | 20% | | Original solutions, custom interactions |
+| Content | 10% | | Real copy, content-design integration |
+| **Weighted Total** | | **/10** | 8.0+ for SOTD consideration |
 
-| Stage | Tool | Gate | Key Question |
-|-------|------|------|-------------|
-| 1. Research | WebSearch + WebFetch | References right? | "Are these 4 references the right inspiration?" |
-| 2. Explore | SuperDesign `create-design-draft` | Direction right? | "Is this heading the right way?" |
-| 3. Iterate | SuperDesign `iterate-design-draft` | Winner chosen? | "Which design wins?" |
-| 4. Generate | Stitch `generate_screen_from_text` | Fidelity OK? | "Does the HTML match the design?" |
-| 5. Integrate | Manual + Stitch baton | Ship it? | "Ready to move to next screen?" |
+### Feedback Pattern Detection
 
-### Feedback Patterns to Watch For
-
-Over multiple screens, patterns will emerge in the feedback log. Use these to improve:
-
-| Pattern | Action |
-|---------|--------|
-| User always swaps a reference type | Pre-filter that reference category |
-| User always picks Variant A style | Bias the original draft toward that direction |
-| User consistently adjusts colours | Update DESIGN.md colour tokens |
-| User requests same typography change | Update init/theme.md font specs |
-| Stitch consistently misses a pattern | Add that pattern to the permanent Stitch prompt block |
-
-**After every 3 screens:** Review the feedback log across all screens and update DESIGN.md, init files, and prompt templates to incorporate recurring preferences.
+After every 3 screens, review feedback logs and update:
+- DESIGN.md if user consistently adjusts the same values
+- Stitch design system `designMd` if Stitch consistently misses patterns
+- Contract Hard Constraints if new deal-breakers emerge
+- Contract Soft Preferences if patterns in user choices appear
 
 ### Common Mistakes
 
-| Mistake | Source | Fix |
-|---------|--------|-----|
-| Auto-advancing past a gate without asking | Pipeline discipline | NEVER skip a gate. Every diamond is a human decision. |
-| Presenting feedback without the 5 dimensions | Pipeline discipline | Always include LAYOUT, COLOUR, TYPOGRAPHY, VIBE, CONTENT |
-| Not logging feedback | Pipeline discipline | Every gate decision goes to `.superdesign/feedback/` |
-| Iterating forever at Stage 3 | Pipeline discipline | Max 3 rounds. Then ask if we should re-research or proceed. |
-| Forgetting previous gate feedback in later stages | Pipeline discipline | Read the feedback log before writing each new prompt. |
-| Not updating DESIGN.md after pattern detection | Pipeline discipline | Review log every 3 screens and propagate learnings. |
-| Stitch invents new layouts (sidebars, dashboards) | Stage 4 | Start EVERY Stitch prompt with explicit exclusions: "NO sidebars, NO navigation, NO dashboard." List what should NOT appear. Be pixel-specific. |
-| Generating only 1 Stitch variation | Stage 4 | ALWAYS generate 2 Stitch variations. Variation A = faithful reproduction, Variation B = pushed emphasis. |
-| Vague Stitch prompts | Stage 4 | Stitch needs hyper-specific prompts: exact hex colours, font names + sizes in px, positions, dimensions. |
-| Using Inter as a display font | Typography | Inter is for body text only. Pick a display typeface with character. |
-| Same weight everywhere | Typography | Use minimum 3 weights: regular, medium, bold. |
-| Symmetric layouts on every section | Layout | Introduce asymmetry: offset grids, staggered cards, broken grid moments. |
-| No motion on interactive elements | Motion | Every button, link, and card needs hover + active states. |
-| Pure #000000 or #FFFFFF as surfaces | Color | Use warm-tinted near-blacks and warm-tinted near-whites. |
-| Forgetting dark mode | Color | Dark mode is not optional. Design it intentionally, not by inverting. |
-| Generic stock photography in heroes | Image | Never. Use product screenshots, custom illustration, or abstract visuals. |
-| Missing `prefers-reduced-motion` | Accessibility | Add the override media query to ALL animated elements. |
-| Designing only for desktop | Responsive | Mobile design is not a resize. Redesign the layout for 4-column grid. |
-| Skipping the Squint Test | Quality | Run the Squint Test before every gate presentation. |
-
-### Batch Execution
-
-Run the pipeline screen-by-screen in `SITE.md` Section 5 order. Each screen's Gate 5 sets up the next screen's baton.
-
-For parallel execution: Stages 1–3 can run in parallel for independent screens. Stages 4–5 must be sequential for site consistency.
-
-**Cross-screen coherence:** After completing a design phase (e.g., all 3 Phase A screens), do a **cohesion review** — view all screens together and check for visual consistency before moving to the next phase. Run the Squint Test on all screens side by side.
+| Mistake | Fix |
+|---------|-----|
+| Auto-advancing past a gate | NEVER skip. Every gate is a human decision. |
+| Not injecting full contract | Every Stitch prompt gets the full contract. |
+| Showing contract-violating output | Validate before presenting. Regenerate if needed. |
+| Forgetting previous feedback | Read contract before every prompt. It accumulates. |
+| Stitch invents layouts | Start every prompt with explicit exclusions. |
+| Vague Stitch prompts | Exact hex, font names + sizes in px, positions, dimensions. |
+| Using `gsap.from()` | Always `gsap.fromTo()` with explicit start AND end states. |
+| Framer Motion for scroll animations | GSAP + ScrollTrigger. FM only for layout animations if needed. |
+| `@studio-freight/lenis` | Package is now `lenis`. |
+| Skipping design system preset | Always start from a Stitch preset, then customize. |
+| Generic discovery | Adapt questions to what's already known. |
+| Not logging feedback | Every gate -> `.design-forge/feedback/` and contract update. |

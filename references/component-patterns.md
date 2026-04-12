@@ -62,7 +62,39 @@ On scroll → glass effect, reduced padding, subtle shadow:
 ```
 
 ### Mobile Navigation
-Full-screen overlay. Never a tiny dropdown. Stagger link animations:
+Full-screen overlay. Never a tiny dropdown. Stagger link animations with GSAP:
+
+```tsx
+// GSAP stagger for mobile nav links
+import { useRef } from 'react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+
+const MobileNav = ({ isOpen }) => {
+  const linksRef = useRef(null);
+
+  useGSAP(() => {
+    if (!isOpen) return;
+    const mm = gsap.matchMedia();
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      gsap.fromTo(
+        linksRef.current.children,
+        { opacity: 0, x: -24 },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.5,
+          ease: 'power4.out',
+          stagger: 0.075,
+        }
+      );
+    });
+    return () => mm.revert();
+  }, { scope: linksRef, dependencies: [isOpen] });
+
+  return <nav ref={linksRef}>{/* nav links */}</nav>;
+};
+```
 
 ```
 ┌─────────────────────────────────┐
@@ -123,6 +155,43 @@ Full-screen overlay. Never a tiny dropdown. Stagger link animations:
 - Use `perspective` transforms for 3D depth on product images
 - Background patterns: dot grids, subtle gradients, animated mesh
 - Never use generic stock photography in a hero. Ever.
+
+**GSAP ScrollTrigger Parallax for Hero Images:**
+```tsx
+import { useRef } from 'react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+
+const HeroImage = ({ src, alt }) => {
+  const ref = useRef(null);
+
+  useGSAP(() => {
+    const mm = gsap.matchMedia();
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      gsap.fromTo(
+        ref.current,
+        { y: 0 },
+        {
+          y: -80,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: ref.current,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: true,
+          },
+        }
+      );
+    });
+    return () => mm.revert();
+  }, { scope: ref });
+
+  return <img ref={ref} src={src} alt={alt} />;
+};
+```
 
 ---
 
@@ -339,6 +408,48 @@ Trusted by
 ```
 
 While the other cards use ghost buttons and no border emphasis.
+
+**Pricing Card Entrance Animation:**
+```javascript
+// GSAP entrance for pricing cards using IntersectionObserver
+import gsap from 'gsap';
+
+const pricingCards = document.querySelectorAll('.pricing-card');
+
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      const mm = gsap.matchMedia();
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        gsap.fromTo(
+          entry.target,
+          { opacity: 0, y: 40, scale: 0.97 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.6,
+            ease: 'power4.out',
+          }
+        );
+      });
+      mm.add('(prefers-reduced-motion: reduce)', () => {
+        gsap.set(entry.target, { opacity: 1, y: 0, scale: 1 });
+      });
+      observer.unobserve(entry.target);
+    });
+  },
+  { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
+);
+
+pricingCards.forEach((card, i) => {
+  // Stagger start state so cards arrive in sequence
+  gsap.set(card, { opacity: 0, y: 40, scale: 0.97 });
+  // Offset observer by card index for natural cascade
+  setTimeout(() => observer.observe(card), i * 80);
+});
+```
 
 ---
 

@@ -164,57 +164,75 @@ document.querySelectorAll('[data-animate]').forEach((el) => {
 });
 ```
 
-### Framer Motion (React/Next.js)
+### GSAP + ScrollTrigger (React/Next.js)
 
 ```tsx
-import { motion } from 'framer-motion';
+import { useRef } from 'react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 // Reusable fade-up component
-const FadeUp = ({ children, delay = 0 }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 32 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: '-50px' }}
-    transition={{
-      duration: 0.7,
-      delay,
-      ease: [0.16, 1, 0.3, 1], // ease-out-expo
-    }}
-  >
-    {children}
-  </motion.div>
-);
+const FadeUp = ({ children, delay = 0 }) => {
+  const ref = useRef(null);
+
+  useGSAP(() => {
+    const mm = gsap.matchMedia();
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      gsap.fromTo(
+        ref.current,
+        { opacity: 0, y: 32 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          delay,
+          ease: 'power4.out',
+          scrollTrigger: {
+            trigger: ref.current,
+            start: 'top 90%',
+            once: true,
+          },
+        }
+      );
+    });
+    return () => mm.revert();
+  }, { scope: ref });
+
+  return <div ref={ref}>{children}</div>;
+};
 
 // Staggered container
-const StaggerContainer = ({ children }) => (
-  <motion.div
-    initial="hidden"
-    whileInView="visible"
-    viewport={{ once: true }}
-    variants={{
-      hidden: {},
-      visible: {
-        transition: { staggerChildren: 0.08 },
-      },
-    }}
-  >
-    {children}
-  </motion.div>
-);
+const StaggerContainer = ({ children }) => {
+  const ref = useRef(null);
 
-const StaggerItem = ({ children }) => (
-  <motion.div
-    variants={{
-      hidden: { opacity: 0, y: 24 },
-      visible: {
-        opacity: 1, y: 0,
-        transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
-      },
-    }}
-  >
-    {children}
-  </motion.div>
-);
+  useGSAP(() => {
+    const mm = gsap.matchMedia();
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      gsap.fromTo(
+        ref.current.children,
+        { opacity: 0, y: 24 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'power4.out',
+          stagger: 0.08,
+          scrollTrigger: {
+            trigger: ref.current,
+            start: 'top 85%',
+            once: true,
+          },
+        }
+      );
+    });
+    return () => mm.revert();
+  }, { scope: ref });
+
+  return <div ref={ref}>{children}</div>;
+};
 ```
 
 ---
@@ -326,26 +344,47 @@ magneticButtons.forEach((btn) => {
 ### Text Reveal (Character by Character)
 
 ```tsx
-// React component for character-split text reveal
+import { useRef } from 'react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+import { SplitText } from 'gsap/SplitText';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(SplitText, ScrollTrigger);
+
+// GSAP SplitText character reveal
 const TextReveal = ({ text, delay = 0 }) => {
+  const ref = useRef(null);
+
+  useGSAP(() => {
+    const mm = gsap.matchMedia();
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      const split = new SplitText(ref.current, { type: 'chars' });
+      gsap.fromTo(
+        split.chars,
+        { y: '100%', opacity: 0 },
+        {
+          y: '0%',
+          opacity: 1,
+          duration: 0.5,
+          ease: 'power4.out',
+          stagger: 0.03,
+          delay,
+          scrollTrigger: {
+            trigger: ref.current,
+            start: 'top 90%',
+            once: true,
+          },
+          onComplete: () => split.revert(),
+        }
+      );
+    });
+    return () => mm.revert();
+  }, { scope: ref });
+
   return (
-    <span style={{ display: 'inline-flex', overflow: 'hidden' }}>
-      {text.split('').map((char, i) => (
-        <motion.span
-          key={i}
-          initial={{ y: '100%' }}
-          whileInView={{ y: 0 }}
-          viewport={{ once: true }}
-          transition={{
-            duration: 0.5,
-            delay: delay + i * 0.03,
-            ease: [0.16, 1, 0.3, 1],
-          }}
-          style={{ display: 'inline-block' }}
-        >
-          {char === ' ' ? '\u00A0' : char}
-        </motion.span>
-      ))}
+    <span ref={ref} style={{ display: 'inline-block', overflow: 'hidden' }}>
+      {text}
     </span>
   );
 };
@@ -360,19 +399,26 @@ const TextReveal = ({ text, delay = 0 }) => {
 ```tsx
 // app/template.tsx (Next.js App Router)
 'use client';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useRef } from 'react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
 
 export default function Template({ children }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -12 }}
-      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-    >
-      {children}
-    </motion.div>
-  );
+  const ref = useRef(null);
+
+  useGSAP(() => {
+    const mm = gsap.matchMedia();
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      gsap.fromTo(
+        ref.current,
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.4, ease: 'power4.out' }
+      );
+    });
+    return () => mm.revert();
+  }, { scope: ref });
+
+  return <div ref={ref}>{children}</div>;
 }
 ```
 
@@ -437,7 +483,11 @@ document.addEventListener('mousemove', (e) => {
 ### Smooth Scroll (Lenis Setup)
 
 ```javascript
-import Lenis from '@studio-freight/lenis';
+import Lenis from 'lenis';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const lenis = new Lenis({
   duration: 1.2,
@@ -446,12 +496,16 @@ const lenis = new Lenis({
   touchMultiplier: 2,
 });
 
-function raf(time) {
-  lenis.raf(time);
-  requestAnimationFrame(raf);
-}
+// Keep GSAP ScrollTrigger in sync with Lenis scroll position
+lenis.on('scroll', ScrollTrigger.update);
 
-requestAnimationFrame(raf);
+// Drive Lenis via GSAP ticker for frame-perfect sync
+gsap.ticker.add((time) => {
+  lenis.raf(time * 1000);
+});
+
+// Prevent GSAP ticker from lagging on inactivity
+gsap.ticker.lagSmoothing(0);
 ```
 
 ---
@@ -471,6 +525,42 @@ requestAnimationFrame(raf);
     scroll-behavior: auto !important;
   }
 }
+```
+
+### GSAP matchMedia for Reduced Motion
+
+Always gate GSAP animations inside `gsap.matchMedia()` so reduced-motion users get instant state changes, not suppressed ones:
+
+```tsx
+import { useRef } from 'react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+
+const AnimatedSection = ({ children }) => {
+  const ref = useRef(null);
+
+  useGSAP(() => {
+    const mm = gsap.matchMedia();
+
+    // Full animation for users with no motion preference
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      gsap.fromTo(
+        ref.current,
+        { opacity: 0, y: 40 },
+        { opacity: 1, y: 0, duration: 0.7, ease: 'power4.out' }
+      );
+    });
+
+    // Instant reveal for reduced-motion users — still set final state
+    mm.add('(prefers-reduced-motion: reduce)', () => {
+      gsap.set(ref.current, { opacity: 1, y: 0 });
+    });
+
+    return () => mm.revert();
+  }, { scope: ref });
+
+  return <div ref={ref}>{children}</div>;
+};
 ```
 
 ### GPU-Accelerated Properties Only

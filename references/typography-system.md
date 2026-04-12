@@ -91,6 +91,8 @@ Never use system font stacks for marketing sites. System fonts are for web apps 
 
 ## 3. Type Scale Systems
 
+> **Token Architecture Note**: Type scale values (`--text-xs` through `--text-7xl`) are primitive tokens. They feed into semantic tokens like `--font-size-body`, `--font-size-heading`, and `--font-size-display`. Component-level styles consume the semantic tokens, never the primitives directly. This keeps the scale decoupled from usage context.
+
 ### The Mathematical Scale
 Never eyeball font sizes. Use a scale ratio and compute every size from it.
 
@@ -252,6 +254,74 @@ body, p, li, a, button, input {
   font-family: var(--font-body), sans-serif;
 }
 ```
+
+---
+
+## 7. Tailwind v4 Font Integration
+
+### Registering Fonts via `@theme`
+
+In Tailwind v4, register font families inside `@theme` so they become utility classes (`font-display`, `font-body`, etc.):
+
+```css
+/* globals.css */
+@import "tailwindcss";
+
+@theme {
+  /* Font family tokens — maps to font-display, font-body, font-mono */
+  --font-display: 'Clash Display', serif;
+  --font-body:    'General Sans', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+}
+```
+
+### Bridge Pattern: `next/font/local` → CSS Variable → `@theme`
+
+`next/font` injects a CSS variable on `<html>`. Alias that variable into your `@theme` so Tailwind utilities pick it up:
+
+```tsx
+// app/layout.tsx
+import localFont from 'next/font/local';
+
+const displayFont = localFont({
+  src: [
+    { path: '../fonts/ClashDisplay-Bold.woff2', weight: '700' },
+    { path: '../fonts/ClashDisplay-Semibold.woff2', weight: '600' },
+  ],
+  variable: '--font-display-loaded', // Next.js injects this on <html>
+  display: 'swap',
+});
+
+const bodyFont = localFont({
+  src: [
+    { path: '../fonts/GeneralSans-Regular.woff2', weight: '400' },
+    { path: '../fonts/GeneralSans-Medium.woff2', weight: '500' },
+    { path: '../fonts/GeneralSans-Semibold.woff2', weight: '600' },
+  ],
+  variable: '--font-body-loaded',
+  display: 'swap',
+});
+
+export default function RootLayout({ children }) {
+  return (
+    <html className={`${displayFont.variable} ${bodyFont.variable}`}>
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+```css
+/* globals.css — bridge next/font variables into @theme */
+@import "tailwindcss";
+
+@theme {
+  --font-display: var(--font-display-loaded), serif;
+  --font-body:    var(--font-body-loaded), sans-serif;
+}
+```
+
+Now `font-display` and `font-body` are available as Tailwind utilities throughout the project.
 
 ---
 

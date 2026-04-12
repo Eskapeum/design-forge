@@ -39,6 +39,8 @@ Pick your champion color. Give it the spotlight. Make neutrals serve it.
 
 ## 2. Palette Construction Method
 
+> **Three-Layer Token Architecture**: Color tokens are organized in three layers — primitives (raw values like `--brand-500`), semantic tokens (meaning-based like `--color-primary`), and component tokens (context-specific like `--btn-bg`). This maps 1:1 to CSS custom properties at each layer. See `design-system-architecture.md` for the full token hierarchy and implementation.
+
 ### Step 1: Choose Your Neutral Base
 This is 60–70% of what users see. Get it right.
 
@@ -318,7 +320,54 @@ Cards and interactive elements should visually lift:
 [data-theme="dark"] img:not([data-no-dim]) {
   filter: brightness(0.9) saturate(0.95);
 }
+
+/* Note: [data-theme="dark"] overrides should target semantic tokens only.
+   Never re-define primitive tokens (--brand-500, --neutral-900) inside
+   [data-theme="dark"]. Only semantic tokens (--color-primary, --bg-primary,
+   --text-primary, etc.) should change. Primitives stay constant across themes. */
 ```
+
+---
+
+## 7. CSS Implementation
+
+---
+
+## 8. Tailwind v4 Integration
+
+### Registering Color Tokens via `@theme`
+
+In Tailwind v4 the `@theme` directive replaces the `theme.extend` config object. Register your color primitives and semantic tokens directly in CSS so Tailwind generates utility classes automatically:
+
+```css
+/* globals.css (or a dedicated tokens.css imported into globals) */
+@import "tailwindcss";
+
+@theme {
+  /* Brand primitives — maps to bg-brand-500, text-brand-500, etc. */
+  --color-brand-50:  oklch(0.97 0.02 275);
+  --color-brand-100: oklch(0.93 0.04 275);
+  --color-brand-200: oklch(0.87 0.08 275);
+  --color-brand-300: oklch(0.78 0.13 275);
+  --color-brand-400: oklch(0.68 0.18 275);
+  --color-brand-500: oklch(0.58 0.22 275);
+  --color-brand-600: oklch(0.50 0.22 275);
+  --color-brand-700: oklch(0.42 0.20 275);
+  --color-brand-800: oklch(0.34 0.16 275);
+  --color-brand-900: oklch(0.27 0.12 275);
+
+  /* Semantic aliases — maps to bg-primary, text-secondary, etc. */
+  --color-primary:        var(--color-brand-500);
+  --color-primary-hover:  var(--color-brand-600);
+  --color-bg-primary:     #FFFFFF;
+  --color-bg-secondary:   #F8FAFC;
+  --color-text-primary:   #0F172A;
+  --color-text-secondary: #475569;
+  --color-border-default: #E2E8F0;
+}
+```
+
+> Tailwind v4 generates utilities for every `--color-*` variable defined in `@theme`. You can then use `bg-primary`, `text-brand-500`, `border-border-default`, etc. directly in JSX without any additional config.
 
 ---
 

@@ -22,7 +22,7 @@
 |---|---|---|
 | Lighthouse Performance | ≥ 90 | < 80 |
 | Largest Contentful Paint | < 2.5s | > 4.0s |
-| First Input Delay | < 100ms | > 300ms |
+| Interaction to Next Paint (INP) | < 200ms | > 500ms |
 | Cumulative Layout Shift | < 0.1 | > 0.25 |
 | Time to Interactive | < 3.8s | > 7.3s |
 | Total Page Weight | < 1.5MB | > 3MB |
@@ -202,6 +202,7 @@ Replace loading spinners with skeleton screens that match the layout:
 The page load should feel intentional, not random:
 
 ```css
+/* CSS fallback (non-JS environments) */
 /* Phase 1: Structure (0ms) */
 .nav { animation: fadeIn 0.4s ease-out 0ms both; }
 
@@ -237,6 +238,74 @@ The page load should feel intentional, not random:
 @keyframes scaleIn {
   from { opacity: 0; transform: scale(0.9); }
   to { opacity: 1; transform: scale(1); }
+}
+```
+
+**GSAP Timeline Version (React/Next.js):**
+
+```tsx
+// components/HeroChoreography.tsx
+'use client';
+import { useRef } from 'react';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+
+export function HeroChoreography({ children }) {
+  const ref = useRef(null);
+
+  useGSAP(() => {
+    const mm = gsap.matchMedia();
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+
+      // Phase 1: Nav structure (immediate)
+      tl.fromTo('.nav', { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0);
+
+      // Phase 2: Hero content (staggered)
+      tl.fromTo(
+        '.hero__headline',
+        { opacity: 0, y: 24 },
+        { opacity: 1, y: 0, duration: 0.7 },
+        0.2
+      );
+      tl.fromTo(
+        '.hero__image',
+        { opacity: 0 },
+        { opacity: 1, duration: 0.8 },
+        0.4
+      );
+      tl.fromTo(
+        '.hero__subtitle',
+        { opacity: 0 },
+        { opacity: 1, duration: 0.6 },
+        0.5
+      );
+      tl.fromTo(
+        '.hero__cta',
+        { opacity: 0, scale: 0.9 },
+        { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(1.4)' },
+        0.7
+      );
+
+      // Phase 3: Social proof
+      tl.fromTo(
+        '.social-proof',
+        { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.6 },
+        0.9
+      );
+    });
+
+    mm.add('(prefers-reduced-motion: reduce)', () => {
+      gsap.set(['.nav', '.hero__headline', '.hero__image', '.hero__subtitle', '.hero__cta', '.social-proof'], {
+        opacity: 1, y: 0, scale: 1,
+      });
+    });
+
+    return () => mm.revert();
+  }, { scope: ref });
+
+  return <div ref={ref}>{children}</div>;
 }
 ```
 
@@ -448,7 +517,7 @@ If any of these fail, the site does not launch:
 |---|---|
 | LCP | < 2.5s on 4G connection |
 | CLS | < 0.1 |
-| FID | < 100ms |
+| INP | < 200ms |
 | Accessibility | Score ≥ 95 |
 | No console errors | Zero errors in production build |
 | HTTPS | All resources served over HTTPS |

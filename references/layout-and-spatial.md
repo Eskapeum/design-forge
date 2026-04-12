@@ -336,3 +336,59 @@ For portfolio or feature showcases:
   scroll-snap-align: start;
 }
 ```
+
+---
+
+## 7. Tailwind v4 Layout Integration
+
+### Registering Spacing Tokens via `@theme`
+
+In Tailwind v4 all design tokens live in CSS inside `@theme`. Register your spacing scale and layout primitives so Tailwind generates the matching utilities (`p-section`, `gap-component`, etc.):
+
+```css
+/* globals.css */
+@import "tailwindcss";
+
+@theme {
+  /* Spacing scale — fluid values via clamp */
+  --spacing-section:   clamp(48px, 8vw, 128px);
+  --spacing-component: clamp(24px, 4vw, 48px);
+  --spacing-element:   clamp(16px, 2vw, 32px);
+
+  /* Grid primitives */
+  --spacing-grid-gutter:  32px;
+  --spacing-grid-margin:  clamp(16px, 4vw, 80px);
+
+  /* Max widths */
+  --width-content:  1280px;
+  --width-text:     65ch;
+  --width-narrow:   720px;
+}
+```
+
+This makes `p-section`, `px-grid-margin`, `max-w-content`, and `gap-grid-gutter` available as utilities without any JavaScript config.
+
+### Container Queries in Tailwind v4
+
+Tailwind v4 supports container queries natively. Apply `@container` and use `@{size}:` variant prefixes:
+
+```tsx
+// No plugin needed in v4 — container queries are built in
+<div className="@container">
+  <div className="flex flex-col @md:flex-row @md:gap-6">
+    <div className="@md:w-[200px]">Image</div>
+    <div className="flex-1">Content</div>
+  </div>
+</div>
+```
+
+```css
+/* Named containers for nested query clarity */
+.card-container {
+  container-type: inline-size;
+  container-name: card;
+}
+
+/* In Tailwind v4 you can also use arbitrary container queries */
+/* @[400px]:flex-row applies when the container is ≥ 400px wide */
+```
