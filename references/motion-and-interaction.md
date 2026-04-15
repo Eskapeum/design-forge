@@ -2,6 +2,26 @@
 
 > Motion is the difference between a website and an experience.
 
+## TL;DR — Cheat Sheet
+
+For implementation syntax, defer to the GSAP skills: `gsap-core`, `gsap-react`, `gsap-scrolltrigger`, `gsap-timeline`, `gsap-performance`. This file governs **design-level motion decisions**, not API usage.
+
+- **Stack:** GSAP + ScrollTrigger + Lenis — not Framer Motion for scroll
+- **Always `gsap.fromTo()`** — never `gsap.from()` (Lenis conflict)
+- **Always `useGSAP`** from `@gsap/react` — never raw `useEffect`
+- **Always `gsap.matchMedia`** with `(prefers-reduced-motion: no-preference)` branch
+- **Custom cursor:** `requestAnimationFrame` + `lerp` — not `gsap.quickTo`
+- **Lenis package:** `lenis` (deprecated `@studio-freight/lenis`)
+- **Easings:** named curves from tokens; never `linear` or default `ease`
+- **Budget:** LCP ≤ 2.0s; CLS ≤ 0.05; no animation > 16ms per frame
+- **Entrance choreography:** 0–1000ms, staggered 40–120ms
+- **Scroll reveal distance:** 20–40px translate, never > 60px (feels glitchy)
+- **Durations:** micro 150ms, standard 300–400ms, hero 600–900ms
+- **Hard rules:** no animation on text longer than one sentence; no parallax on mobile; no autoplay video without mute + controls
+- **Accessibility:** every animation MUST have a reduce-motion branch
+
+When implementing → baton-pass to GSAP sibling skills for exact current API.
+
 ## Table of Contents
 1. Motion Philosophy
 2. Easing Functions Bible

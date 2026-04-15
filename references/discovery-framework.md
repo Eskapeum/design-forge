@@ -257,3 +257,71 @@ Use this template to generate `.design-forge/contract.md` after Gate 0:
 - {preference 1 — detected from feedback patterns}
 - {preference 2}
 ```
+
+---
+
+## Deterministic Preset Mapping Matrix
+
+Instead of vibes, derive the preset from three discovery signals: **archetype × emotional target × density**.
+
+### Archetype → preset shortlist
+
+| Archetype | Primary candidates |
+|---|---|
+| Sovereign / Authoritative | Luxury, Newsprint |
+| Avant-garde / Artist      | Kinetic, Motion, Hand-draw |
+| Technician / Engineer     | Beam, Uber, Bauhaus |
+| Entertainer / Joyful      | Playful, Kinetic |
+| Caregiver / Warm          | Playful, Hand-draw |
+| Rebel / Disruptor         | Bauhaus, Win98 |
+| Sage / Thoughtful         | Newsprint, Luxury |
+| Magician / Wonder         | Motion, Kinetic |
+| System / Platform         | Uber, Beam |
+
+### Emotional target → nudge
+
+| Target | Nudge |
+|---|---|
+| Quiet / restrained       | Prefer Luxury, Newsprint, Beam — avoid Kinetic, Playful |
+| Loud / expressive        | Prefer Kinetic, Motion, Bauhaus, Win98 — avoid Beam |
+| Trusted / institutional  | Prefer Luxury, Uber, Newsprint — avoid Hand-draw, Win98 |
+| Human / approachable     | Prefer Playful, Hand-draw — avoid Bauhaus (unless ironic) |
+| Future / progressive     | Prefer Kinetic, Motion, Beam — avoid Newsprint |
+| Nostalgic / familiar     | Prefer Newsprint, Win98, Hand-draw — avoid Beam, Motion |
+
+### Density → tie-break
+
+| Density | Bias |
+|---|---|
+| Spacious / editorial     | Luxury, Newsprint, Beam |
+| Balanced / functional    | Uber, Beam, Bauhaus |
+| Dense / info-rich        | Uber, Newsprint |
+| Ornamental / maximalist  | Kinetic, Motion, Hand-draw |
+
+### Procedure
+
+1. Score each preset 0–3 across the three dimensions.
+2. Pick highest total. Ties: apply user anti-preferences to break (hard exclusions remove a preset regardless of score).
+3. If top two are within 1 point and emotionally different, offer both at Gate 0.5 via COMPARE.
+
+### Hard exclusions (never pick)
+
+- **Neumorphism** on accessibility-critical sites (contrast risk)
+- **Win98 / Hand-draw** on trust-critical sites (banking, legal, healthcare)
+- **Bauhaus** if user rejected primary colors
+- **Playful** if archetype is Sovereign or Sage
+
+### Preset → mandatory customizations
+
+| Preset | Must override |
+|---|---|
+| Luxury       | `customColor` + `colorMode: DARK` default |
+| Newsprint    | Serif `headlineFont`; `colorVariant: MONOCHROME` or `TONAL_SPOT` |
+| Kinetic      | Confirm motion budget in contract |
+| Bauhaus      | Saturated primary; avoid neutrals-only palette |
+| Playful      | `roundness: ROUND_TWELVE` or `ROUND_FULL` |
+| Uber         | Adjust accent for non-Uber brands |
+| Win98        | Requires explicit y2k/retro archetype |
+| Neumorphism  | Only on explicit user request; deprecated default |
+| Beam         | Good default when contract is ambiguous |
+| Motion       | Only with scroll-story content |

@@ -1,6 +1,6 @@
 ---
 name: design-forge
-description: "Awwwards-level web design system with discovery, design system presets, contract enforcement, and a 7-stage pipeline with human feedback gates. Triggers on: design this, create mockup, visual design, design the UI, website design, landing page, hero section, page design, site build, design forge, or when SITE.md has unchecked pages."
+description: "Awwwards-level web design system with discovery, design system presets, contract enforcement, Stitch MCP integration, and a 7-stage pipeline with human feedback gates. Triggers on: design this, create mockup, visual design, design the UI, website design, landing page, hero section, page design, site build, design forge, or when SITE.md has unchecked pages. DO NOT trigger on: database design, API design, schema design, prompt design, system architecture, infrastructure design, or anything non-visual."
 ---
 
 # Design Forge — Awwwards-Level Design System
@@ -30,6 +30,20 @@ Loaded on-demand per stage. Do NOT load all at once.
 | `references/motion-and-interaction.md` | Stage 2+ | GSAP patterns, scroll animations, micro-interactions |
 | `references/component-patterns.md` | Stage 2+ | Nav, heroes, cards, CTAs, forms, footers |
 | `references/performance-and-craft.md` | Stage 4+ | Performance budgets, accessibility, pre-launch audit |
+| `references/quickstart.md` | Anytime (new users) | 5-minute worked example, copy-paste skeleton |
+| `references/contract-validator.md` | Every Stitch output | Severity model, automated validator prompt, thresholds |
+| `references/recovery-playbook.md` | On any failure | Symptom → diagnosis → action table per stage |
+| `references/state-layout.md` | Any state question | `.design-forge/` schema, file formats, lifecycle |
+| `references/site-schema.md` | Project init | Canonical `SITE.md` grammar and states |
+| `references/research-playbook.md` | Stage 1 | Search templates, source list, reject-list, scoring rubric |
+| `references/integration-nextjs.md` | Stage 5 (Next.js) | Token export, component extraction, a11y+perf pass |
+| `references/batch-mode.md` | Sites with ≥5 screens | Parallel dispatch rules, batch gates |
+| `references/metrics-and-retro.md` | Every gate + every 3 screens | Metrics schema, retro template, cross-project learning |
+| `references/sibling-skills.md` | Any baton-pass | When to hand off to design-shotgun, stitch-loop, gsap-*, etc. |
+
+## Quickstart
+
+New to Design Forge? Load `references/quickstart.md` — a 40-line worked example walks through every stage with real files. Then come back here.
 
 ---
 
@@ -49,7 +63,7 @@ DESIGN CONTRACT flows forward through every stage. Every Stitch call includes th
 
 ## The Design Contract
 
-The Design Contract is the enforcement mechanism. It is a living document stored at `.design-forge/contract.md` that:
+The Design Contract is the enforcement mechanism. It is a living document stored at `.design-forge/contract/current.md` that:
 
 1. **Captures** every user decision (discovery answers, preset choice, gate approvals, feedback)
 2. **Captures** every research finding (patterns to steal, layout approaches, techniques)
@@ -110,12 +124,16 @@ The Design Contract is the enforcement mechanism. It is a living document stored
 
 ### Contract Rules
 
-1. **Create** the contract at the end of Stage 0 (Discovery)
-2. **Enrich** the contract at Gate 0.5 (Design System) and Gate 1 (Research)
-3. **Inject** the full contract into every Stitch prompt from Stage 2 onward
-4. **Update** the contract after every gate with new feedback
-5. **Validate** every Stitch output against the contract before presenting to user
-6. **Never remove** a directive unless the user explicitly says to
+1. **Create** the contract at the end of Stage 0 (Discovery). Write `.design-forge/contract/v1.md` and point `.design-forge/contract/current.md` at it.
+2. **Version, never overwrite.** Each gate that advances the contract writes a new `v{N+1}.md` and repoints `current.md`. The old version is frozen for audit and rollback.
+3. **Append to the `## Changelog` section** in each new version: what changed, which gate, what feedback drove it.
+4. **Enrich** the contract at Gate 0.5 (Design System) and Gate 1 (Research).
+5. **Inject** the full contract into every Stitch prompt from Stage 2 onward.
+6. **Update** the contract after every gate with new feedback.
+7. **Validate** every Stitch output against the contract before presenting to user — see `references/contract-validator.md` for the severity model (BLOCK/FLAG/PASS) and the self-check prompt template. BLOCK-level outputs are regenerated, never shown to the user.
+8. **Never remove** a directive unless the user explicitly says to. Instead, mark it `[resolved]` in the changelog so history is preserved.
+
+See `references/state-layout.md` for the full `.design-forge/` directory schema.
 
 ---
 
@@ -206,7 +224,7 @@ Does this capture your vision? Your options:
 - EXPAND   -> Add context I missed
 ```
 
-**After APPROVE:** Write Design Contract v1 to `.design-forge/contract.md`
+**After APPROVE:** Write Design Contract v1 to `.design-forge/contract/current.md`
 
 ---
 
@@ -339,7 +357,7 @@ Your options:
 
 **Process:**
 
-1. Read the full Design Contract (`.design-forge/contract.md`)
+1. Read the full Design Contract (`.design-forge/contract/current.md`)
 2. Read research (`.design-forge/research/{screen-name}.md`)
 3. Read DESIGN.md
 4. Verify Stitch design system is applied
@@ -412,11 +430,17 @@ Here's the first Stitch design: {show/describe output}
 
 Contract validation: All {N} directives met.
 
-Quick direction check (Awwwards-weighted):
-1. DESIGN (40%)     -- Does the visual system feel right?
-2. USABILITY (30%)  -- Is the hierarchy clear? Navigation intuitive?
-3. CREATIVITY (20%) -- Does it feel original, not template-like?
-4. CONTENT (10%)    -- Is the right content represented?
+Awwwards-weighted score (all gates; threshold grows per stage):
+
+| Criterion | Weight | Score 1-10 | Notes |
+|-----------|--------|------------|-------|
+| Design     | 40% | | Visual system, hierarchy, typography |
+| Usability  | 30% | | Clarity, flow, navigation |
+| Creativity | 20% | | Originality, not template-like |
+| Content    | 10% | | Right content represented |
+
+**Gate 2 advance threshold: weighted total ≥ 5.5.**
+(Gate 4 threshold: ≥ 7.5. Gate 5 SOTD-eligible: ≥ 8.0.)
 
 Your options:
 - GOOD DIRECTION -> Move to variations
@@ -651,3 +675,66 @@ After every 3 screens, review feedback logs and update:
 | Skipping design system preset | Always start from a Stitch preset, then customize. |
 | Generic discovery | Adapt questions to what's already known. |
 | Not logging feedback | Every gate -> `.design-forge/feedback/` and contract update. |
+| Overwriting the contract in place | Always write a new `v{N+1}.md` and repoint `current.md`. See `state-layout.md`. |
+| Skipping validator on Stitch output | Every output gets validated; BLOCK → regen, FLAG → show with callout. See `contract-validator.md`. |
+| Running serial on a 10-page site | Use Batch Mode (`batch-mode.md`) for Stages 1 and 2 parallelization. |
+| Re-inventing integration code | Use `integration-nextjs.md` + baton-pass to `shadcn` / `gsap-*` / `react-components`. |
+| Bypassing sibling skills | See `sibling-skills.md` for the decision tree and handoff rules. |
+
+---
+
+## Dry-Run Mode
+
+For onboarding or testing, invoke with `--dry-run` (or say "dry run" in your prompt). The skill:
+
+1. Narrates each stage without calling Stitch
+2. Shows the **exact prompt** it would send (fully injected contract + research directives)
+3. Shows the validator criteria it would apply
+4. Waits for explicit "continue with real call" approval per stage
+
+Use this to:
+- Learn the pipeline without burning Stitch calls
+- Review prompt quality before expensive generation
+- Debug when outputs keep failing validation — inspect the prompt first
+
+---
+
+## Metrics (automatic)
+
+Every gate decision appends one row to `.design-forge/metrics.json`. Every 3 shipped screens (or on project completion) the skill generates a retro at `.design-forge/retro/{date}.md` with quality trajectory, reject-reason patterns, and cross-project promotion candidates.
+
+See `references/metrics-and-retro.md` for the schema and retro template. Cross-project learnings promote to `~/.design-forge/global-preferences.md` and `~/.design-forge/reference-library.md`.
+
+---
+
+## GSD Integration
+
+Design Forge is the canonical implementer for `gsd:ui-phase`:
+
+| GSD artifact | Design Forge artifact |
+|---|---|
+| UI-SPEC.md            | Design Contract identity + design-system sections |
+| Phase PLAN.md         | SITE.md per-screen rows |
+| Phase execution       | Design Forge Stages 1–5 per screen |
+| `gsd:ui-review`       | Retroactive audit — use after Stage 5 for verification |
+
+Invoke as `Stage 5 → gsd:ui-review` for the 6-pillar audit before final sign-off.
+
+---
+
+## Sibling Skills — Quick Pointer
+
+See `references/sibling-skills.md` for the full decision tree. Top baton-passes:
+
+| When | Use |
+|---|---|
+| Brand archetype undefined | `design-consultation` (before Stage 0) |
+| Multiple concurrent concepts | `design-shotgun` (alt Stage 2) |
+| Granular screen edits | `stitch-loop` (inside Stage 3) |
+| Prompt keeps failing validation | `enhance-prompt` (before every Stitch call) |
+| Next.js integration in Stage 5 | `shadcn` + `gsap-react` + `gsap-scrolltrigger` |
+| Vite/React components | `react-components` |
+| Visual QA before Gate 5 | `design-review` (always) |
+| Parallel dispatch in Batch Mode | `superpowers:dispatching-parallel-agents` |
+
+Never invoke the deprecated `superdesign` skill — Stitch MCP replaced it in v2.

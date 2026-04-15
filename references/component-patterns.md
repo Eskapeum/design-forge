@@ -2,6 +2,21 @@
 
 > Every component is a small product. Design it like someone will screenshot it.
 
+## TL;DR — Cheat Sheet
+
+This file is about **visual composition patterns**, not code. For implementation, baton-pass to `shadcn` (primitives), `react-components` (Vite/React assembly), or `integration-nextjs.md` (Next.js wiring).
+
+- **Nav:** 64–80px height; logo left, primary 3–5 items center or right, single CTA far right; mobile = hamburger at ≤ 768px; sticky with backdrop blur after 80px scroll
+- **Hero:** one headline (≤ 8 words), one sub (≤ 20 words), one CTA, one visual; never compete two CTAs at equal weight
+- **Cards:** consistent aspect ratio (3:4, 4:3, or 16:9); one hover state; never mix padding scales
+- **CTAs:** primary + optional ghost; primary button never appears twice in a single viewport
+- **Forms:** labels above inputs; inline validation; one submit; never reset buttons
+- **Footer:** destination moment — large type, contact, social, one final CTA; 4–6 column grid at desktop
+- **Density rule:** alternating section heights — compressed (400–600px) vs expanded (800–1200px) creates rhythm
+- **Never:** carousels for critical content, modal for first-time visitor, ghost nav over image-only hero, full-width divider lines
+
+Use this file for design-level decisions; use shadcn/react-components for implementation.
+
 ## Table of Contents
 1. Navigation
 2. Hero Sections
